@@ -5259,21 +5259,23 @@ function setCookie(cname, cvalue,exdays)		//cookies设置
     document.cookie = cname + "=" + cvalue + "; " + expires+";path=/";
 }
 
-function getCookie(Name)			//cookies读取
+function getCookie(name)
 {
-	var search = Name + "="
-	if(document.cookie.length > 0)
-	{
-		offset = document.cookie.indexOf(search)
-		if(offset != -1)
-		{
-			offset += search.length
-			end = document.cookie.indexOf(";", offset)
-			if(end == -1) end = document.cookie.length
-			return unescape(document.cookie.substring(offset, end))
-		 }
-	else return ""
-	  }
+    var arr=document.cookie.split('; ');
+    var i=0;
+    for(i=0;i<arr.length;i++)
+    {
+        //arr2->['username', 'abc']
+        var arr2=arr[i].split('=');
+
+        if(arr2[0]==name)
+        {
+            var getC = decodeURIComponent(arr2[1]);
+            return getC;
+        }
+    }
+
+    return '';
 }
 function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");

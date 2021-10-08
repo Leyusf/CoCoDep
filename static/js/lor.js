@@ -1,3 +1,6 @@
+var clock = '';
+var nums = 30;
+var btn;
 /**
  * Variables
  */
@@ -74,11 +77,42 @@ $("#login").click(function () {
   else{
     $("#password_error").css("display","none")
   }
-  // captcha
+  if (sub===false)
+    return;
+  $.ajax({
+          type:"POST",
+          url:"/login/",
+          dataType:'json',
+          data:{
+            "email":email,
+            "pwd":pwd,
+          },
+          success:function(data) {
+              if (data['code']===0){
+                $("#form_area").css("display","none")
+                $("#captcha_area").css("display","block")
+                $("#forget").css("display","none")
+                $("#login").css("display","none")
+                $("#login2").css("display","block")
+                $("#tag").css("display","block")
+                btn = $("#resend_l");
+                btn.disabled = true; //将按钮置为不可点击
+                btn.val("Resend("+nums+")")
+                clock = setInterval("CountDown()", 1000);
+                $("#resend_l").css("display", "block")
+              }
+              else{
+                $("#password_error").css("display","block")
+              }
+          }
+      })
 })
 
 
+
+
 $("#register").click(function () {
+  $("#email_msg").css("display","none")
   const height = $("#form_r").height()
   let sub = true
   const name = $("#name").val();
@@ -113,7 +147,155 @@ $("#register").click(function () {
   else{
     $("#pwd2_error").css("display","none")
   }
-  const height2 = $("#form_r").height()
-  $("#user_options-forms").height($("#user_options-forms").height() + height2 - height)
-  // captcha
+
+  if (sub===false){
+    const height2 = $("#form_r").height()
+    $("#user_options-forms").height($("#user_options-forms").height() + height2 - height)
+    return
+  }
+
+  $.ajax({
+          type:"POST",
+          url:"/checkUser/",
+          dataType:'json',
+          data:{
+            "email":email,
+            "name":name,
+            "pwd":pwd,
+          },
+          success:function(data) {
+            console.log(data['code'])
+              if (data['code']===0){
+                $("#r_box").css("display","none")
+                $("#code").css("display","block")
+                $("#tag_r").css("display","block")
+                $("#register").css("display", "none")
+                $("#reg").css("display","block")
+                btn = $("#resend");
+                btn.disabled = true; //将按钮置为不可点击
+                btn.val("Resend("+nums+")")
+                clock = setInterval("CountDown()", 1000);
+                $("#resend").css("display","block")
+              }
+              else if(data['code']===-1){
+                $("#email_msg").html("The email has been registered")
+                $("#email_msg").css("display","block")
+                const height2 = $("#form_r").height()
+                $("#user_options-forms").height($("#user_options-forms").height() + height2 - height)
+              }
+              else{
+                $("#email_msg").html("Email sending failed")
+                $("#email_msg").css("display","block")
+                const height2 = $("#form_r").height()
+                $("#user_options-forms").height($("#user_options-forms").height() + height2 - height)
+              }
+          }
+      })
 })
+
+
+function CountDown() {
+  nums--;
+  if(nums > 0){
+  btn.val("Resend("+nums+")")
+  }else{
+  btn.val("Resend")
+  clearInterval(clock); //清除js定时器
+  btn.disabled = false;
+  btn.value = 'Resend';
+  nums = 30; //重置时间
+  }
+}
+
+
+$("#reg").click(function () {
+  let code = $("#code").val()
+  $.ajax({
+          type:"POST",
+          url:"/register/"+code,
+          dataType:'json',
+          success:function(data) {
+              if (data['code']===-1){
+                $("#code_error").css("display","block")
+              }
+              else{
+                //注册成功
+                  setCookie("email",$("#register_email").val(),7) // 7天过期
+                top.location.href = '/ps/'+$("#register_email").val()
+              }
+          }
+      })
+})
+
+$("#resend").click(function () {
+  let email = $("#register_email").val()
+  $.ajax({
+    type:"POST",
+    url:"/email_captcha/"+email,
+    dataType: 'json'
+  })
+  btn.val("Resend("+nums+")")
+  clock = setInterval("CountDown()", 1000);
+})
+
+$("#resend_l").click(function () {
+  let email = $("#login_email").val()
+  $.ajax({
+    type:"POST",
+    url:"/email_captcha/"+email,
+    dataType: 'json'
+  })
+  btn.val("Resend("+nums+")")
+  clock = setInterval("CountDown()", 1000);
+})
+
+$("#login2").click(function () {
+  let code = $("#captcha").val()
+  $.ajax({
+          type:"POST",
+          url:"/validate_r/"+code,
+          dataType:'json',
+          success:function(data) {
+              if (data['code']===-1){
+                $("#captcha_error").css("display","block")
+              }
+              else{
+                //登录成功
+                  setCookie("email",$("#login_email").val(),7) // 7天过期
+                top.location.href = '/ps/'+$("#login_email").val()
+              }
+          }
+      })
+})
+
+function setCookie(cname, cvalue,exdays)		//cookies设置
+{
+	var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires+";path=/";
+}
+
+function getCookie(name)
+{
+    var arr=document.cookie.split('; ');
+    var i=0;
+    for(i=0;i<arr.length;i++)
+    {
+        //arr2->['username', 'abc']
+        var arr2=arr[i].split('=');
+
+        if(arr2[0]==name)
+        {
+            var getC = decodeURIComponent(arr2[1]);
+            return getC;
+        }
+    }
+
+    return '';
+}
+
+function removeCookie(name)
+{
+    setCookie(name, '1', -1);
+}

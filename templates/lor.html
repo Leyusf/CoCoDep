@@ -31,8 +31,9 @@
     <div class="user_options-forms" id="user_options-forms">
       <div class="user_forms-login">
         <h2 class="forms_title">Log In</h2>
-        <form class="forms_form">
+        <form class="forms_form" id="login_box">
           <fieldset class="forms_fieldset">
+              <div id="form_area">
             <div class="forms_field">
               <input type="email" placeholder="Email" class="forms_field-input" autofocus id="login_email"/>
             </div>
@@ -40,21 +41,28 @@
               <input type="password" placeholder="Password" class="forms_field-input" id="login_pwd"/>
                 <div style="padding-top: 5px; display: none" id="password_error"><span style="color:red;">Your email or password error</span></div>
             </div>
-            <div class="forms_field">
+                  </div>
+            <div class="forms_field" id="captcha_area" style="display: none">
+                <div id="tag" style="display: none;font-size: 14px;margin-bottom: 15px"><span>We have sent a captcha to your email. Please enter it.</span></div>
                 <input type="text" placeholder="Captcha" class="forms_field-input" style="width: 40%;" maxlength="6" id="captcha"/>
                 <div style="padding-top: 5px; display: none" id="captcha_error"><span style="color:red;">Your captcha error</span></div>
             </div>
           </fieldset>
           <div class="forms_buttons">
-            <button type="button" class="forms_buttons-forgot">Forget password?</button>
+            <button type="button" class="forms_buttons-forgot" id="forget">Forget password?</button>
             <input type="button" value="Login" class="forms_buttons-action" id="login">
+            <input type="button" value="Login" class="forms_buttons-action" id="login2" style="display: none">
+              <input type="button" value="Resend" class="forms_buttons-action"  id="resend_l" style="display: none;width: 200px">
           </div>
+
+
+
         </form>
       </div>
       <div class="user_forms-signup" id="box_r">
         <h2 class="forms_title">Register</h2>
         <form class="forms_form" id="form_r">
-          <fieldset class="forms_fieldset">
+          <fieldset class="forms_fieldset" id="r_box">
             <div class="forms_field">
               <input type="text" placeholder="Real Name" class="forms_field-input" id="name" name="name"/>
                 <div style="padding-top: 5px; display: none" id="name_error"><span style="color:red;">Sorry, please fill out the names of</span></div>
@@ -62,6 +70,7 @@
             <div class="forms_field">
               <input type="email" placeholder="Email" class="forms_field-input" id="register_email"/>
                 <div style="padding-top: 5px; display: none" id="email_error"><span style="color:red;">Email addresses are not correct format</span></div>
+                <div style="padding-top: 5px;"><span style="color:red; display: none" id="email_msg"></span></div>
             </div>
             <div class="forms_field">
               <input type="password" placeholder="Password" class="forms_field-input" id="pwd1"/>
@@ -69,16 +78,25 @@
             </div>
             <div class="forms_field">
               <input type="password" placeholder="Confirm Password" class="forms_field-input" id="pwd2"/>
-                <div style="padding-top: 5px; display: none" id="pwd2_error"><span style="color:red;">Enter the password twice to the same</span></div>
+                <div style="padding-top: 5px; display: none" id="pwd2_error"><span style="color:red;" id="msg">Enter the password twice to the same</span></div>
             </div>
           </fieldset>
+            <div id="tag_r" style="display:none;font-size: 14px;margin-bottom: 15px"><span>We have sent a captcha to your email. Please enter it.</span></div>
           <div class="forms_buttons">
+
               <div class="forms_field" style="width: 40%;margin-right: 130px">
-              <input type="text" placeholder="Captcha" class="forms_field-input" id="code" >
-                  <div style="padding-top: 5px; display: none" id="name_error"><span style="color:red;">Your captcha error</span></div>
+
+              <input type="text" placeholder="Captcha" class="forms_field-input" id="code" style="display: none">
+                  <div style="padding-top: 5px; display: none" id="code_error"><span style="color:red;">Your captcha error</span></div>
               </div>
             <input type="button" value="Register" class="forms_buttons-action"  id="register">
+            <input type="button" value="Register" class="forms_buttons-action" style="display: none;"  id="reg">
           </div>
+            <div>
+
+                <input type="button" value="Resend" class="forms_buttons-action"  id="resend" style="display: none;margin-top: 30px;width: 200px">
+            </div>
+
         </form>
       </div>
     </div>
