@@ -18,7 +18,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # 配置30天有效
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 配置1天有效
 
 app.config['MAIL_SERVER'] = "smtp.qq.com"
 app.config['MAIL_PORT'] = "587"
@@ -36,8 +36,8 @@ from entity.Education import Education
 from entity.Award import Award
 
 
-# models.drop_all()
-# models.create_all()
+models.drop_all()
+models.create_all()
 
 
 def email_send_html(email):
@@ -94,11 +94,8 @@ def login():
     session['id'] = user.id
     session['email'] = user.email
     session['name'] = user.name
-    # 发送验证
-    if email_send_html(user.email):
-        return jsonify({"code": 0})
-    else:
-        return jsonify({"code": -2, "msg": "internal error"})
+    session['login'] = True
+    return jsonify({"code":0})
 
 
 @app.route('/logout/', methods=['post'])
@@ -139,6 +136,7 @@ def checkUser():
         session['name'] = name
         session['email'] = email
         session['pwd'] = pwd
+        session['role'] = request.form.get("role")
         return jsonify({"code": 0})
     else:
         return jsonify({"code": -2})
@@ -149,7 +147,7 @@ def register(code):
     if validate(code) is False:
         return jsonify({"code": -1})
     captcha_drop()
-    user = User(session['email'], session['name'], session['pwd'])
+    user = User(session['email'], session['name'], session['pwd'], session['role'])
     user.put()
     print(user.email)
     user = User.get(session['email'])

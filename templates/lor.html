@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
 <meta charset="UTF-8">
 <title>CoCoDep - login and register</title>
@@ -79,6 +79,7 @@
             <div class="forms_field">
               <input type="password" placeholder="Confirm Password" class="forms_field-input" id="pwd2"/>
                 <div style="padding-top: 5px; display: none" id="pwd2_error"><span style="color:red;" id="msg">Enter the password twice to the same</span></div>
+                <div style="padding-top: 5px; display: none" id="role_error"><span style="color:red;">Please select your identity</span></div>
             </div>
           </fieldset>
             <div id="tag_r" style="display:none;font-size: 14px;margin-bottom: 15px"><span>We have sent a captcha to your email. Please enter it.</span></div>
@@ -89,7 +90,12 @@
               <input type="text" placeholder="Captcha" class="forms_field-input" id="code" style="display: none">
                   <div style="padding-top: 5px; display: none" id="code_error"><span style="color:red;">Your captcha error</span></div>
               </div>
-            <input type="button" value="Register" class="forms_buttons-action"  id="register">
+              <div  style="margin-right: 100px;display: flex" id="role_box">
+                  <input type="radio" name="role" value="student">Student<input type="radio" name="role" value="teacher">Teacher
+              </div>
+
+
+            <input type="button" value="Register" class="forms_buttons-action"  id="register" >
             <input type="button" value="Register" class="forms_buttons-action" style="display: none;"  id="reg">
           </div>
             <div>

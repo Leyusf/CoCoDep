@@ -18,11 +18,13 @@ class User(models.Model):
     birth = models.Column(models.String(10), default="")
     birthaddress = models.Column(models.String(20), default="")
     workaddress = models.Column(models.String(20), default="")
+    role = models.Column(models.Integer(), nullable=False, autoincrement=True)
 
-    def __init__(self, email, name, password, admin=False):
+    def __init__(self, email, name, password, role, admin=False):
         self.email = email
         self.name = name
         self.set_password(password)
+        self.role = role
         f = open(file=os.path.join(app.root_path, 'static', 'images', 'headpic', '1.png'), mode='rb')
         self.headpic = base64.b64encode(f.read())
         self.admin = admin

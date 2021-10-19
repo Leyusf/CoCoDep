@@ -89,17 +89,8 @@ $("#login").click(function () {
           },
           success:function(data) {
               if (data['code']===0){
-                $("#form_area").css("display","none")
-                $("#captcha_area").css("display","block")
-                $("#forget").css("display","none")
-                $("#login").css("display","none")
-                $("#login2").css("display","block")
-                $("#tag").css("display","block")
-                btn = $("#resend_l");
-                btn.disabled = true; //将按钮置为不可点击
-                btn.val("Resend("+nums+")")
-                clock = setInterval("CountDown()", 1000);
-                $("#resend_l").css("display", "block")
+                  setCookie("email",$("#login_email").val(),7) // 7天过期
+                  top.location.href = '/ps/'+$("#login_email").val()
               }
               else{
                 $("#password_error").css("display","block")
@@ -115,6 +106,8 @@ $("#register").click(function () {
   $("#email_msg").css("display","none")
   const height = $("#form_r").height()
   let sub = true
+  const role = $('input:radio:checked').val()
+    let roleCode = -1;
   const name = $("#name").val();
   if (name.length===0){
     sub = false
@@ -147,12 +140,27 @@ $("#register").click(function () {
   else{
     $("#pwd2_error").css("display","none")
   }
+  if (role!=="student"&&role!=="teacher"){
+      $("#role_error").css("display","block")
+      sub=false
+  }
+  else{
+      $("#role_error").css("display","none")
+      if (role==="student"){
+          roleCode = 0
+      }
+  else{
+      roleCode = 1
+      }
+  }
 
   if (sub===false){
     const height2 = $("#form_r").height()
     $("#user_options-forms").height($("#user_options-forms").height() + height2 - height)
     return
   }
+
+  $("#role_box").css("display","none")
 
   $.ajax({
           type:"POST",
@@ -162,9 +170,9 @@ $("#register").click(function () {
             "email":email,
             "name":name,
             "pwd":pwd,
+              "role":roleCode
           },
           success:function(data) {
-            console.log(data['code'])
               if (data['code']===0){
                 $("#r_box").css("display","none")
                 $("#code").css("display","block")
@@ -236,36 +244,6 @@ $("#resend").click(function () {
   })
   btn.val("Resend("+nums+")")
   clock = setInterval("CountDown()", 1000);
-})
-
-$("#resend_l").click(function () {
-  let email = $("#login_email").val()
-  $.ajax({
-    type:"POST",
-    url:"/email_captcha/"+email,
-    dataType: 'json'
-  })
-  btn.val("Resend("+nums+")")
-  clock = setInterval("CountDown()", 1000);
-})
-
-$("#login2").click(function () {
-  let code = $("#captcha").val()
-  $.ajax({
-          type:"POST",
-          url:"/validate_r/"+code,
-          dataType:'json',
-          success:function(data) {
-              if (data['code']===-1){
-                $("#captcha_error").css("display","block")
-              }
-              else{
-                //登录成功
-                  setCookie("email",$("#login_email").val(),7) // 7天过期
-                top.location.href = '/ps/'+$("#login_email").val()
-              }
-          }
-      })
 })
 
 function setCookie(cname, cvalue,exdays)		//cookies设置
