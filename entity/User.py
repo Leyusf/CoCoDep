@@ -13,21 +13,19 @@ class User(models.Model):
     name = models.Column(models.String(12), nullable=False)
     password = models.Column(models.String(108), nullable=False)
     headpic = models.Column(models.LargeBinary(length=2048 * 493), nullable=False)
-    admin = models.Column(models.Boolean(), default=False)
     sign = models.Column(models.String(120))
-    birth = models.Column(models.String(10), default="")
-    birthaddress = models.Column(models.String(20), default="")
-    workaddress = models.Column(models.String(20), default="")
+    experience = models.Column(models.String(200), default="******")
+    workaddress = models.Column(models.String(20), default="******")
     role = models.Column(models.Integer(), nullable=False, autoincrement=True)
 
-    def __init__(self, email, name, password, role, admin=False):
+    def __init__(self, email, name, password, role):
         self.email = email
         self.name = name
         self.set_password(password)
         self.role = role
         f = open(file=os.path.join(app.root_path, 'static', 'images', 'headpic', '1.png'), mode='rb')
         self.headpic = base64.b64encode(f.read())
-        self.admin = admin
+
         self.sign = "I’m an independent creative freelancer focusing on web design,mobile application and UI design."
 
     def set_password(self, value):

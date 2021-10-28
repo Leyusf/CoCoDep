@@ -14,32 +14,16 @@
 
 <div class="form-wrapper">
   <form action="/update/" method="post">
-    <label for="birthday">Birthday</label>
-    <input id="time" type="number" list="timelist" placeholder="Year" value="{{ birthday }}" name="time">
-    <datalist id="timelist">
-    </datalist>
-      <script type='text/javascript'>
-          let str = "";
-            for (let i = 1970; i<2022;i++){
-                str += "<option>" + i + "</option>"
-            }
-            document.getElementById("timelist").innerHTML = str;
-            let obj = document.getElementById("time")
-            obj.onclick = function(){
-            obj.value = ""
-        }
-      </script>
-
-
-    <label for="birthplace">Birthplace</label>
-    <input type="text" id="badd" value="{{ badd }}" name="badd">
     
     <label for="cadd">Current Address</label>
     <input type="text" id="cadd" value="{{ wadd }}" name="wadd">
 
     <label for="sign">Self-Introduction</label>
       <textarea type="text" id="sign" name="sign" style="height: 80px">{{ sign }}</textarea>
-    
+
+    <label for="sign">Experiences</label>
+      <textarea type="text" id="sign" name="exp" style="height: 80px">{{ exp }}</textarea>
+
     <button type="submit">Update</button>
   </form>
 </div>

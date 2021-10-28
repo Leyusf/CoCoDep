@@ -130,129 +130,30 @@
                             <div class="resume_wrap">
                                 <div class="leftpart">
                                     <div class="info_box_wrap">
-                                        <div class="title"><span class="main">Born</span></div>
+                                        <div class="title"><span class="main">Address</span></div>
                                         <div class="times_list">
-
                                             <ul>
                                                 <li>
-                                                    <p><span>
-                                                        {% if birth != "" %}
-                                                        {{ birth }}
+                                                    {% if waddress!="" %}
+                                                    <p>Lives and works in {{ waddress }}
                                                         {% else %}
-                                                        secret
-                                                        {% endif %}
-                                                        </span>-
-                                                        {% if baddress != "" %}
-                                                        {{ baddress }}
-                                                        {% else %}
-                                                        secret
-                                                        {% endif %},</p>
-                                                </li>
-                                                <li>
-                                                    <p>Lives and works in {% if waddress != "" %}
-                                                        {{ waddress }}
-                                                        {% else %}
-                                                        secret
-                                                        {% endif %}</p>
+                                                        <p> Secret</p>
+                                                    {% endif %}
                                                 </li>
                                             </ul>
 
                                         </div>
                                     </div>
                                     <div class="info_box_wrap">
-                                        <div class="title"><span class="main">Education</span><span class="top">({{ numE }}
-                                                items)</span></div>
+                                        <div class="title"><span class="main">Experience</span></div>
                                         <div class="times_list">
                                             <ul>
-                                            {% if numE != 0 %}
-                                                {% for item in education %}
-                                                <li>
-                                                    <p>{{ item.des }},</p>
-                                                </li>
-                                                {% endfor %}
-                                            {% else %}
-                                                <li>
-                                                    <p>Don't be too curious</p>
-                                                </li>
-                                            {% endif %}
+                                            {{ exp }}
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="rightpart">
-                                    <div class="info_box_wrap">
-                                        <div class="title"><span class="main">Awards</span><span class="top">({{ numA }} items)</span>
-                                        </div>
-                                        <div class="times_list">
-                                        <ul>
-                                            {% if numA !=0 %}
-                                                {% for item in award %}
-                                                <li>
-                                                    <p><span>{{ item.year }}</span>-{{ item.des }},</p>
-                                                </li>
-                                                {% endfor %}
-                                            {% else %}
-                                                <li>
-                                                    <p>I am very modest.</p>
-                                                </li>
-                                            {% endif %}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="skills_wrap">
-                                        <div class="title">
-                                            <h3>My Skills</h3>
-                                        </div>
-                                        <div class="progress_bar_wrap_total">
-                                            <div class="resumify_tm_progress_wrap">
-                                                <div class="resumify_tm_progress" data-value="80" data-color="#fc214e">
-                                                    <span><span class="label">Web Design</span><span
-                                                            class="number">(80%)</span></span>
-                                                    <div class="resumify_tm_bar_bg">
-                                                        <div class="resumify_tm_bar_wrap">
-                                                            <div class="resumify_tm_bar"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="resumify_tm_progress" data-value="70" data-color="#fc214e">
-                                                    <span><span class="label">Brand Identity</span><span
-                                                            class="number">(70%)</span></span>
-                                                    <div class="resumify_tm_bar_bg">
-                                                        <div class="resumify_tm_bar_wrap">
-                                                            <div class="resumify_tm_bar"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="resumify_tm_progress" data-value="90" data-color="#fc214e">
-                                                    <span><span class="label">Javascript</span><span
-                                                            class="number">(95%)</span></span>
-                                                    <div class="resumify_tm_bar_bg">
-                                                        <div class="resumify_tm_bar_wrap">
-                                                            <div class="resumify_tm_bar"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="resumify_tm_progress" data-value="85" data-color="#fc214e">
-                                                    <span><span class="label">WordPress</span><span
-                                                            class="number">(85%)</span></span>
-                                                    <div class="resumify_tm_bar_bg">
-                                                        <div class="resumify_tm_bar_wrap">
-                                                            <div class="resumify_tm_bar"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="resumify_tm_progress" data-value="87" data-color="#fc214e">
-                                                    <span><span class="label">Photoshop</span><span
-                                                            class="number">(90%)</span></span>
-                                                    <div class="resumify_tm_bar_bg">
-                                                        <div class="resumify_tm_bar_wrap">
-                                                            <div class="resumify_tm_bar"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

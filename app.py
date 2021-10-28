@@ -32,12 +32,11 @@ mail.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:991123@localhost:3306/CoCoDep?charset=utf8'
 models = SQLAlchemy(app)
 from entity.User import User
-from entity.Education import Education
-from entity.Award import Award
+from entity.Module import Module
 
 
-models.drop_all()
-models.create_all()
+# models.drop_all()
+# models.create_all()
 
 
 def email_send_html(email):
@@ -95,7 +94,7 @@ def login():
     session['email'] = user.email
     session['name'] = user.name
     session['login'] = True
-    return jsonify({"code":0})
+    return jsonify({"code": 0})
 
 
 @app.route('/logout/', methods=['post'])
@@ -179,11 +178,8 @@ def resume(email):
     if 'email' in session and str(session['email']) == str(email):
         flag = 1
     user = User.get(email)
-    education = Education.getRecordByEmail(email)
-    award = Award.getRecordByEmail(email)
-    return render_template('resume.html', email=email, name=user.name, education=education, birth=user.birth,
-                           pic=str(user.headpic)[2:-1], baddress=user.birthaddress, waddress=user.workaddress,
-                           flag=flag, numE=len(education), award=award, numA=len(award))
+    return render_template('resume.html', email=email, name=user.name, pic=str(user.headpic)[2:-1], exp=user.experience,
+                           waddress=user.workaddress, flag=flag)
 
 
 @app.route('/modify/')
@@ -197,30 +193,55 @@ def modify():
 def upInfo():
     email = session['email']
     user = User.get(email)
-    education = Education.getRecordByEmail(email)
-    award = Award.getRecordByEmail(email)
-    return render_template('upInfo.html', birthday=user.birth, badd=user.birthaddress, wadd=user.workaddress, sign=user.sign)
+    return render_template('upInfo.html', wadd=user.workaddress, sign=user.sign, exp=user.experience)
 
 
 @app.route('/update/', methods=['post'])
 def update():
-    time = request.form.get("time")
-    badd = request.form.get("badd")
+    exp = request.form.get("exp")
     wadd = request.form.get("wadd")
     sign = request.form.get("sign")
     email = session['email']
     user = User.get(email)
-    user.birth = time
-    user.birthaddress = badd
+    user.experience = exp
     user.workaddress = wadd
     user.sign = sign
     models.session.commit()
     return redirect(url_for("upInfo"))
 
 
-@app.route('/education/')
-def education():
-    return render_template('education.html')
+@app.route('/module/', methods=['get'])
+def module():
+    user = User.get(session['email'])
+    if user.role == 1:  # teachers
+        module = Module.get(session['email'])
+        if module is None:  # No module
+            return render_template('module.html', role=user.role, act=0, email=user.email)
+        else:
+            return render_template('module.html', role=user.role, act=1, email=user.email)
+    else:
+        # 查询学生的课程
+        return
+
+
+@app.route('/createM/', methods=['get'])
+def createM():
+    return render_template('createM.html')
+
+
+@app.route('/createModule/', methods=['post'])
+def createModule():
+    name = request.form.get("name")
+    module = Module(session['email'], name)
+    module.put()
+    return redirect(url_for("innerModule"))
+
+
+@app.route('/m/teacher/', methods=['get'])
+def innerModule():
+    email = session['email']
+    module = Module.get(email)
+    return render_template('moduleInner.html', email=email, module=module, leader=session['name'])
 
 
 if __name__ == '__main__':
