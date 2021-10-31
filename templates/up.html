@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="/static/css/uploader.css" rel="stylesheet" type="text/css">
+</head>
+<body style="background-color: white">
+	<div class="jq22-container">
+		<section role="main" class="l-main" style="margin-top:50px;margin-bottom:50px;">
+		      <div class="uploader__box js-uploader__box l-center-box">
+		          <form action="/uploadFile/" method="POST">
+		              <div class="uploader__contents">
+		                  <label class="button button--secondary" for="files">Select Files</label>
+		                  <input id="files" class="uploader__file-input" type="file" value="Select Files">
+		              </div>
+		              <input class="button button--big-bottom" type="submit" value="Upload">
+		          </form>
+		      </div>
+		  </section>
+
+	</div>
+	
+	<script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/uploader.js"></script>
+	<script type="text/javascript">
+		(function(){
+	            var options = {};
+	            $('.js-uploader__box').uploader({
+	            	'selectButtonCopy':'select files',
+	            	'instructionsCopy':'You can select or drag multiple files',
+	            	'submitButtonCopy':'Upload',
+	            	'furtherInstructionsCopy':'You can select or drag multiple files',
+	            	'secondarySelectButtonCopy':'select files'
+	            });
+	        }());
+	</script>
+</body>
+</html>

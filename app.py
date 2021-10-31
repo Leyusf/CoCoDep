@@ -1,15 +1,8 @@
-import datetime
 import os
-import time
-import uuid
-import random
 from datetime import timedelta
-from flask import Flask, render_template, request, jsonify, session, url_for, redirect
-from flask_mail import Message, Mail
+from flask import Flask
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
-
-from tool.tool import validate
-from tool.tool import captcha_drop
 
 app = Flask(__name__)
 mail = Mail()
@@ -31,27 +24,14 @@ mail.init_app(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:991123@localhost:3306/CoCoDep?charset=utf8'
 models = SQLAlchemy(app)
+
 from entity.User import User
 from entity.Module import Module
+from entity.Resource import Resource
 
 
 # models.drop_all()
 # models.create_all()
-
-
-def email_send_html(email):
-    message = Message(subject='CoCoDep validation', recipients=[email])
-    try:
-        # 发送渲染一个模板
-        first = random.randint(0, 25)
-        captcha = str(uuid.uuid4())[first:first + 6]
-        session['captcha'] = captcha
-        session['captcha_time'] = int(time.time())
-        message.html = render_template('email_temp.html', captcha=captcha)
-        mail.send(message)
-        return True
-    except:
-        return False
 
 
 @app.route('/')
@@ -82,167 +62,12 @@ def lor():
     return render_template('lor.html')
 
 
-@app.route('/login/', methods=['post'])
-def login():
-    email = request.form.get("email")
-    user = User.get(email)
-    if user is None or user.match(request.form.get("pwd")) is False:
-        # 失败
-        return jsonify({"code": -1})
-    # 成功
-    session['id'] = user.id
-    session['email'] = user.email
-    session['name'] = user.name
-    session['login'] = True
-    return jsonify({"code": 0})
+# 注册蓝图
+from controller.access import *
+from controller.private import *
 
-
-@app.route('/logout/', methods=['post'])
-def logout():
-    session['email'] = None
-    session['name'] = None
-    session['id'] = None
-    session['login'] = None
-    return jsonify({"code": 0})
-
-
-@app.route('/validate_r/<code>', methods=['POST'])
-def validate_r(code):
-    if validate(code):
-        captcha_drop()
-        session['login'] = True
-        return jsonify({"code": 0})
-    return jsonify({"code": -1})
-
-
-# 发送一个html
-@app.route('/email_captcha/<email>', methods=['POST'])
-def send_email(email):
-    if email_send_html(email):
-        return jsonify({"code": 0})
-    return jsonify({"code": -1})
-
-
-@app.route('/checkUser/', methods=['post'])
-def checkUser():
-    email = request.form.get("email")
-    name = request.form.get("name")
-    pwd = request.form.get("pwd")
-    user = User.get(email)
-    if user is not None:
-        return jsonify({"code": -1})
-    if email_send_html(email):
-        session['name'] = name
-        session['email'] = email
-        session['pwd'] = pwd
-        session['role'] = request.form.get("role")
-        return jsonify({"code": 0})
-    else:
-        return jsonify({"code": -2})
-
-
-@app.route('/register/<code>', methods=['post'])
-def register(code):
-    if validate(code) is False:
-        return jsonify({"code": -1})
-    captcha_drop()
-    user = User(session['email'], session['name'], session['pwd'], session['role'])
-    user.put()
-    print(user.email)
-    user = User.get(session['email'])
-    print(user.sign)
-    session['id'] = user.id
-    session['pwd'] = None
-    session['login'] = True
-    return jsonify({"code": 0})
-
-
-@app.route('/ps/<email>/', methods=['post', 'get'])
-def person(email):
-    return render_template('ps.html', email=email, name=User.get(email).name)
-
-
-@app.route('/personal/<email>/', methods=['post', 'get'])
-def personalization(email):
-    flag = 0
-    if 'email' in session and str(session['email']) == str(email):
-        flag = 1
-    user = User.get(email)
-    return render_template('personal.html', email=email, name=user.name, sign=user.sign,
-                           pic=str(user.headpic)[2:-1], flag=flag)
-
-
-@app.route('/resume/<email>/', methods=['post', 'get'])
-def resume(email):
-    flag = 0
-    if 'email' in session and str(session['email']) == str(email):
-        flag = 1
-    user = User.get(email)
-    return render_template('resume.html', email=email, name=user.name, pic=str(user.headpic)[2:-1], exp=user.experience,
-                           waddress=user.workaddress, flag=flag)
-
-
-@app.route('/modify/')
-def modify():
-    email = session['email']
-    user = User.get(email)
-    return render_template('modify.html', email=email, name=user.name, pic=str(user.headpic)[2:-1])
-
-
-@app.route('/upInfo/')
-def upInfo():
-    email = session['email']
-    user = User.get(email)
-    return render_template('upInfo.html', wadd=user.workaddress, sign=user.sign, exp=user.experience)
-
-
-@app.route('/update/', methods=['post'])
-def update():
-    exp = request.form.get("exp")
-    wadd = request.form.get("wadd")
-    sign = request.form.get("sign")
-    email = session['email']
-    user = User.get(email)
-    user.experience = exp
-    user.workaddress = wadd
-    user.sign = sign
-    models.session.commit()
-    return redirect(url_for("upInfo"))
-
-
-@app.route('/module/', methods=['get'])
-def module():
-    user = User.get(session['email'])
-    if user.role == 1:  # teachers
-        module = Module.get(session['email'])
-        if module is None:  # No module
-            return render_template('module.html', role=user.role, act=0, email=user.email)
-        else:
-            return render_template('module.html', role=user.role, act=1, email=user.email)
-    else:
-        # 查询学生的课程
-        return
-
-
-@app.route('/createM/', methods=['get'])
-def createM():
-    return render_template('createM.html')
-
-
-@app.route('/createModule/', methods=['post'])
-def createModule():
-    name = request.form.get("name")
-    module = Module(session['email'], name)
-    module.put()
-    return redirect(url_for("innerModule"))
-
-
-@app.route('/m/teacher/', methods=['get'])
-def innerModule():
-    email = session['email']
-    module = Module.get(email)
-    return render_template('moduleInner.html', email=email, module=module, leader=session['name'])
-
+app.register_blueprint(access)
+app.register_blueprint(private)
 
 if __name__ == '__main__':
     app.run(use_reloader=False)
