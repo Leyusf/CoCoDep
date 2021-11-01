@@ -21,7 +21,7 @@ class Resource(models.Model):
         path = os.path.join(self.realpath, file.filename)
         file.save(path)
         self.MID = MID
-        self.size = get_FileSize(self.realpath)
+        self.size = get_FileSize(path)
         self.datetime = datetime.now()
         self.name = file.filename
 

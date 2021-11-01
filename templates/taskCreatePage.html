@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CoCoDep - CreateTask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:400,700&amp;display=swap'>
+    <link rel="stylesheet" href="/static/css/task.css">
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <form autocomplete="off" action="/createTask/" method="post" enctype='multipart/form-data'>
+        <div id="focus"></div>
+        <h1>Task info</h1>
+        <input type="text" placeholder="Name" autocomplete="no" name="name" required><br>
+        <input type="text" placeholder="Description" autocomplete="no" name="des">
+        <p id="totoal" name="75">Total Student: {{ studentNum }}</p><br>
+        <div id="G">
+            <input type="number" min="0" half placeholder="Group Number" autocomplete="no" id="group1" num="1" onchange="calculateG(this)">
+            <input type="number" min="0" half placeholder="Member Number" autocomplete="no" id="evegroup1" num="1"onchange="calculateM(this)">
+        </div>
+        <div style="display: inline-block;width: 100%">
+            &nbsp;The Number of remain students: <br><br><input type="number" half placeholder="Rest" autocomplete="no" name="rest" disabled id="remain">
+        </div>
+        <input type="text" name="group" style="display: none" id="groupBox">
+        <input type="text" name="member" style="display: none" id="memberBox">
+        <input type="button" value="Add Solution" onclick="addSolution()">
+        <input type="show" placeholder="File" style="display: none" id="fileBox" disabled>
+        <input type="button" value="Submit File" onclick="UploadFile()">
+        <input type="file" placeholder="File" style="display: none" id="file" name="file">
+        <div style="display: inline-block;width: 100%">
+            <p>&nbsp;Start date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End date:</p>
+        </div>
+        <input type="date" half placeholder="Start Time" autocomplete="no" name="startTime" required>
+        <input type="date" half placeholder="End Time" autocomplete="no" name="endTime" required>
+        <input type="submit" value="Send it" onsubmit="check()">
+    </form><!-- partial -->
+    <script src='/static/js/jquery.min.js'></script>
+    <script src="/static/js/task.js"></script>
+</body>
+
+</html>

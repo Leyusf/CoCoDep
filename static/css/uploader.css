@@ -614,3 +614,15 @@ h6 {
   color: #969696;
   font-size: 0.9em;
   padding: 0.5em; }
+.btn-close{
+    background-color: #ff4f4f;
+    color: white;
+    font:14px bold;
+    border-radius: 5px;
+    border: 2px darkred solid;
+    padding: 5px;
+}
+.btn-close:hover{
+    background-color: #ff0018;
+    border: 2px #b02a37 solid;
+}

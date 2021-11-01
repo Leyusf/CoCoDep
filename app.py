@@ -53,7 +53,7 @@ def introduction():
 def launch():
     email = request.cookies.get("email")
     if "email" in session and str(session['email']) == str(email) and 'login' in session and session['login'] == True:
-        return redirect(url_for('person', email=email))
+        return redirect(url_for('access.person', email=email))
     return render_template('launch.html')
 
 

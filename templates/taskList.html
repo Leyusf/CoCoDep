@@ -14,27 +14,35 @@
 <h1 style="margin-top: 20px;font-size:20px;text-align:center;">
     {{ module.name }} &nbsp;&nbsp;&nbsp; {{ leader }}
 </h1>
-{% if lr | length != 0 %}
+{% if tasks | length != 0 %}
 		<ul class="items-group">
-            {% for i in lr %}
+            {% for i in tasks %}
                 <li class="item" style="left: 0px; opacity: 1;padding-left:5px;padding-right: 5px;border: 1px #4fc08d solid;border-radius: 7px">
-                    <span class="text"><a style="text-decoration: none;color:#4fc08d;font-size:14px;" href="/download/{{ i.id }}/">{{i.name}}</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.size }}KB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.datetime }}</span>
+                    <span class="text"><a style="text-decoration: none;color:#4fc08d;font-size:14px;" href="/downloadTask/{{ i.id }}/">{{i.name}}</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.datetime }}</span>
                     <span class="icon" id="{{ i.id }}">X</span>
                 </li>
             {% endfor %}
 		</ul>
 {% endif %}
     <div>
-        <iframe id="iframe" src="/upload/" frameborder="0" width="100%" height="500px"></iframe>
+        <div style="text-align:center;padding-top: 10px;margin-top: 20px">
+            <button class="btn-tc" onclick="createTask()">
+            Create task
+            </button>
+        </div>
+
     </div>
     <script type="text/javascript">
+        function createTask(){
+            window.location.href='/tasksCreatePage/'
+        }
         $(".icon").on('click',function (){
             let id = $(this).attr('id')
             $.ajax({
                 type:'post',
                 dataType:'json',
                 data:{"id":id},
-                url:'/delete/',
+                url:'/deleteTask/',
                 success: function (data) {
                             if (data['code']==0){
                                 window.location.reload()

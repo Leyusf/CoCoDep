@@ -80,7 +80,7 @@ def checkUser():
         session['name'] = name
         session['email'] = email
         session['pwd'] = pwd
-        session['role'] = request.form.get("role")
+        session['role'] = int(request.form.get("role"))
         return jsonify({"code": 0})
     else:
         return jsonify({"code": -2})

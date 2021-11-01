@@ -1,4 +1,8 @@
-from app import models
+import os
+
+from app import models, app
+from entity.Resource import Resource
+from entity.Task import Task
 
 
 class Module(models.Model):
@@ -26,3 +30,15 @@ class Module(models.Model):
     def put(self):
         models.session.add(self)
         return True
+
+    def dele(self):
+        resources = Resource.getAllByModule(self.id)
+        for i in resources:
+            i.dele()
+        tasks = Task.getAllByModule(self.id)
+        for i in tasks:
+            i.dele()
+        path = os.path.join(app.root_path,  "MODULE_"+str(self.id))
+        os.rmdir(path)
+        Module.query.filter(Module.id == self.id).delete()
+        models.session.commit()
