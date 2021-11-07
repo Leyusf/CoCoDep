@@ -61,6 +61,7 @@ $(function(){
 
 
 $("#login").click(function () {
+    $("#ft_error").css("display","none")
   const email = $("#login_email").val();
   const pwd = $("#login_pwd").val();
   const captcha = $("#captcha").val();
@@ -277,3 +278,28 @@ function removeCookie(name)
 {
     setCookie(name, '1', -1);
 }
+
+$("#forget").on('click',function () {
+    let email = $("#login_email").val()
+    if (checkEmail(email)===false){
+    $("#ft_error").css("display","block")
+        return
+  }
+  else{
+    $("#ft_error").css("display","none")
+  }
+    $.ajax({
+    type:"GET",
+    url:"/forget/"+email,
+    dataType: 'json',
+        success:function(data) {
+              if (data['code']===-1){
+                $("#ft_error").css("display","block")
+              }
+              else{
+                alert("Please check your email.")
+              }
+          }
+  })
+
+})

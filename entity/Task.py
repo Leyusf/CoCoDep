@@ -50,7 +50,10 @@ class Task(models.Model):
         return True
 
     def dele(self):
-        path = os.path.join(self.realpath, self.filename)
-        os.remove(path)
+        try:
+            path = os.path.join(self.realpath, self.filename)
+            os.remove(path)
+        except:
+            pass
         Task.query.filter(Task.id == self.id).delete()
         models.session.commit()

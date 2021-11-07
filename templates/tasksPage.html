@@ -41,6 +41,7 @@
 	<style type="text/css" id="static-stylesheet"></style>
 	<link rel="stylesheet" href="/static/css/b62d25f1624dc157ffc72121f05f2b24.css" type="text/css" media="all" /> <!-- Cache! -->
 	<link rel="stylesheet" href="/static/css/normalize.min.css">
+    <script src="/static/js/jquery-1.7.2.js"></script>
 <style type='text/css'>
 .iphorm-elements .iphorm-element-wrap-text input, .iphorm-elements .iphorm-element-wrap-captcha input, .iphorm-elements .iphorm-element-wrap-password input, .iphorm-elements .iphorm-element-wrap select, .iphorm-elements .iphorm-element-wrap textarea{
   WIDTH:100% !important;
@@ -86,31 +87,20 @@
 
 
 <div   id="page" backgroundSize='true' class=' wide ' >
-
-
-	<!-- left, center, classical, classic-centered -->
-	<!-- !Header -->
 	<header id="header" class="logo-left  mobiletopbottom headerPM menuPosition" role="banner"><!-- class="overlap"; class="logo-left", class="logo-center", class="logo-classic" -->
 		<div class="wf-wrap">
-			<div class="wf-table">
+			<div style="display: inline">
 
 
 
 <div id="branding" class="wf-td bit-logo-bar" style="" >
 	<a  class="bitem logo small" style="display: table-cell;" href="/"><span class="logospan"><img class="preload-me" src="/static/images/logo.png" width="95" height="45"   alt="CoCoDep"  /></span></a>
-
-	<!-- <div id="site-title" class="assistive-text"></div>
-	<div id="site-description" class="assistive-text"></div> -->
 </div>
-								<div class="wf-mobile-visible wf-td assistive-info    " role="complementary"  >
-					<div  class="top-bar-right right bit_widget_more" bitdatamarker="bitHeader-2" bitdataaction="site_fix_container" bitdatacolor="white">
-					 					</div>
-				</div>
 
 
 		<!-- !- Navigation -->
-		<nav style="0" id="navigation" class="wf-td"   bitDataAction="site_menu_container" bitDataLocation="primary" >
-			<ul id="main-nav" data-st="0" data-sp="0"  data-fh="0" data-mw="0" data-lh="48" class="mainmenu fancy-rollovers wf-mobile-hidden bit-menu-default underline-hover position-text-right"      data-bit-menu=underline-hover data-bit-float-menu=underline-hover ><li class=" menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5365 current_page_item bit-menu-post-id-5365 menu-item-5583 first level-arrows-on act"><a href="/task/"><span>Task</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5428 menu-item-5581 level-arrows-on"><a href="/module"><span>Module</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5446 menu-item-5578 level-arrows-on"><a href="/ps/{{ email }}"><span>Personal Center</span></a></li></ul>
+		<nav style="padding-top:20px;padding-right:20px;float: right" id="navigation" class="wf-td"   bitDataAction="site_menu_container" bitDataLocation="primary" >
+<ul id="main-nav" data-st="0" data-sp="0"  data-fh="0" data-mw="0" data-lh="48" class="mainmenu fancy-rollovers wf-mobile-hidden bit-menu-default underline-hover position-text-right"      data-bit-menu=underline-hover data-bit-float-menu=underline-hover ><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5428 menu-item-5581 level-arrows-on"><a href="/module"><span>Module</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5365 current_page_item bit-menu-post-id-5365 menu-item-5583 first level-arrows-on act"><a href="/task/"><span>Task</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5446 menu-item-5578 level-arrows-on"><a href="/ps/{{ email }}"><span>Personal Center</span></a></li></ul>
 
 
 
@@ -164,7 +154,37 @@
             <div  class="section-background-overlay background-overlay grid-overlay-0 " style="background-color: #ffffff;"></div>
         <div class="container" style="padding-top: 20px;padding-bottom: 40px;">
             {% if role == 1 %}
-                <iframe id="iframe" src="/tasksList/" frameborder="0" width="100%" height="900px"></iframe>
+                <div class="tbl">
+                    <ul class="items-group">
+                        {% for i in tasks %}
+                            <li class="item" style="left: 0px; opacity: 1;padding-left:5px;padding-right: 5px;border: 1px #4fc08d solid;border-radius: 7px;background-color: white">
+                                <span class="text"><a style="text-decoration: none;color:#4fc08d;font-size:14px;" href="#">{{i.id}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.name }}</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.module }}</span>
+                                <span class="icon" style="padding-top: 2px;" id="{{ i.id }}">X</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <script type="text/javascript">
+                        $(".icon").on('click',function (){
+                            let id = $(this).attr('id')
+                            var r = confirm("Delete this?")
+                            if (r==true){
+                                $.ajax({
+                                type:'post',
+                                dataType:'json',
+                                data:{"id":id},
+                                url:'/deleteTask/',
+                                success: function (data) {
+                                            if (data['code']==0){
+                                                window.location.reload()
+                                            }
+                                        }
+                            })
+                            }
+                        })
+                    </script>
+                </div>
+
+
             {% else %}
 
             {% endif %}

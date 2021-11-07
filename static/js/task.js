@@ -73,7 +73,6 @@ function addSolution(){
     memberValue.push(0)
 }
 
-let studentNum = 75
 let groupValue = [1]
 let memberValue = [studentNum]
 
@@ -90,6 +89,12 @@ function calculateG(obj){
     $("#evegroup"+num).val(memberValue[num-1])
     let remain = rem - groupValue[num-1]*memberValue[num-1]
     $("#remain").val(remain)
+    if ($("#remain").val()!=0){
+        $("#addS").css('display','block')
+    }
+    else{
+        $("#addS").css('display','none')
+    }
 }
 
 function calculateM(obj){
@@ -105,6 +110,12 @@ function calculateM(obj){
     $("#group"+num).val(groupValue[num-1])
     let remain = rem - groupValue[num-1]*memberValue[num-1]
     $("#remain").val(remain)
+        if ($("#remain").val()!=0){
+        $("#addS").css('display','block')
+    }
+    else{
+        $("#addS").css('display','none')
+    }
 }
 
 function check(){
@@ -112,19 +123,13 @@ function check(){
         alert("Remain must be 0")
         return false
     }
-    console.log($("#file").val())
-    if ($("#file").val()==""){
-        alert("No file")
-        return false
-    }
     let group = ""
     let member = ""
     for (let i=0;i<gnum;i++){
         group = group + groupValue[i] + ","
-        member = member + groupValue[i] + ","
+        member = member + memberValue[i] + ","
     }
     $("#groupBox").val(group)
     $("#memberBox").val(member)
-    console.log($("#groupBox").val()+"   :    "+ $("#memberBox").val())
     return true
 }

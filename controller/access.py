@@ -4,6 +4,7 @@ import random
 from flask import render_template, request, jsonify, session, Blueprint
 from flask_mail import Message, Mail
 
+from app import models
 from entity.User import User
 from tool.tool import validate, captcha_drop
 
@@ -20,6 +21,16 @@ def email_send_html(email):
         session['captcha'] = captcha
         session['captcha_time'] = int(time.time())
         message.html = render_template('email_temp.html', captcha=captcha)
+        mail.send(message)
+        return True
+    except:
+        return False
+
+
+def email_send_html_ft(email, pwd):
+    message = Message(subject='CoCoDep Change Password', recipients=[email])
+    try:
+        message.html = render_template('email_ft.html', pwd=pwd)
         mail.send(message)
         return True
     except:
@@ -123,3 +134,23 @@ def resume(email):
     user = User.get(email)
     return render_template('resume.html', email=email, name=user.name, pic=str(user.headpic)[2:-1], exp=user.experience,
                            waddress=user.workaddress, flag=flag)
+
+
+@access.route('/forget/<email>/', methods=['get'])
+def forget(email):
+    user = User.get(email)
+    if user is None:
+        return jsonify({'code': -1})
+    pwd = str(uuid.uuid4())[0:12]
+    user.set_password(pwd)
+    email_send_html_ft(email, pwd)
+    return jsonify({'code': 0})
+
+
+@access.route('/setSign/', methods=['post'])
+def setSign():
+    sign = request.form.get('sign')
+    user = User.get(session['email'])
+    user.sign = sign
+    models.session.commit()
+    return jsonify({"msg": sign})

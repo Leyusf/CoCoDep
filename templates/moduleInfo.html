@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="description" content="Neat">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" user-scalable="no">
+	<link rel="stylesheet" href="/static/css/style.css">
+
+	<script src="/static/js/jquery.min.js"></script>
+    <title>CoCoDep - Module Info</title>
+</head>
+<body style="padding: 0px">
+<div class="main-group">
+<h1 style="margin-top: 20px;font-size:20px;text-align:center;">
+    {{ module.name }} &nbsp;&nbsp;&nbsp; {{ leader }}
+</h1>
+{% if tasks | length == 0 %}
+    There is no content
+{% endif %}
+		<ul class="items-group">
+                        {% for i in tasks %}
+                            <li class="item" style="left: 0px; opacity: 1;padding-left:5px;padding-right: 5px;border: 1px #4fc08d solid;border-radius: 7px">
+                                <span class="text"><a style="text-decoration: none;color:#4fc08d;font-size:14px;" href="#">{{i.id}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.name }}</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.module }}</span>
+                                <span class="icon" style="padding-top: 2px;" id="{{ i.id }}">X</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <script type="text/javascript">
+                        $(".icon").on('click',function (){
+                            let id = $(this).attr('id')
+                            var r = confirm("Delete this?")
+                            if (r==true){
+                                $.ajax({
+                                type:'post',
+                                dataType:'json',
+                                data:{"id":id},
+                                url:'/deleteTask/',
+                                success: function (data) {
+                                            if (data['code']==0){
+                                                window.location.reload()
+                                            }
+                                        }
+                            })
+                            }
+                        })
+                    </script>
+
+                <div>
+                    <input type="button" class="createBtn" value="Go Back" onclick="window.location.href='/module/'">
+                    <form action="/tasksCreatePage/" method="post" style="display: none" id="fm">
+                        <input type="text" value="{{ module.id }}" name="mid" style="display: none">
+
+                    </form>
+                    <input type="submit" class="createBtn" value="New Task" id="btn-s">
+                    <script>
+                        $("#btn-s").click(function (){
+                            $("#fm").submit()
+                        })
+                    </script>
+
+                </div>
+	</div>
+</body>
+</html>

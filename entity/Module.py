@@ -1,7 +1,6 @@
 import os
 
 from app import models, app
-from entity.Resource import Resource
 from entity.Task import Task
 
 
@@ -17,7 +16,13 @@ class Module(models.Model):
 
     def get(email):
         try:
-            return Module.query.filter(Module.email == email).first()
+            return Module.query.filter(Module.email == email).all()
+        except:
+            return None
+
+    def getById(id):
+        try:
+            return Module.query.filter(Module.id == id).first()
         except:
             return None
 
@@ -39,6 +44,9 @@ class Module(models.Model):
         for i in tasks:
             i.dele()
         path = os.path.join(app.root_path,  "MODULE_"+str(self.id))
-        os.rmdir(path)
+        try:
+            os.rmdir(path)
+        except:
+            pass
         Module.query.filter(Module.id == self.id).delete()
         models.session.commit()

@@ -27,7 +27,6 @@ models = SQLAlchemy(app)
 
 from entity.User import User
 from entity.Module import Module
-from entity.Resource import Resource
 
 
 # models.drop_all()

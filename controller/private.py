@@ -2,7 +2,6 @@ from flask import url_for, redirect, send_from_directory, Blueprint, render_temp
 
 from app import models
 from entity.Module import Module
-from entity.Resource import Resource
 from entity.Task import Task
 from entity.User import User
 
@@ -26,19 +25,20 @@ def modify():
 def upInfo():
     email = session['email']
     user = User.get(email)
-    return render_template('upInfo.html', wadd=user.workaddress, sign=user.sign, exp=user.experience)
+    return render_template('upInfo.html', wadd=user.workaddress, exp=user.experience)
 
 
 @private.route('/update/', methods=['post'])
 def update():
     exp = request.form.get("exp")
     wadd = request.form.get("wadd")
-    sign = request.form.get("sign")
+    pwd = request.form.get("pwd")
     email = session['email']
     user = User.get(email)
     user.experience = exp
     user.workaddress = wadd
-    user.sign = sign
+    if pwd != "":
+        user.set_password(pwd)
     models.session.commit()
     return redirect(url_for("private.upInfo"))
 
@@ -47,11 +47,8 @@ def update():
 def module():
     user = User.get(session['email'])
     if user.role == 1:  # teachers
-        module = Module.get(session['email'])
-        if module is None:  # No module
-            return render_template('module.html', role=user.role, act=0, email=user.email)
-        else:
-            return render_template('module.html', role=user.role, act=1, email=user.email)
+        modules = Module.get(session['email'])
+        return render_template('module.html', role=user.role, modules=modules, email=user.email, name=user.name)
     else:
         # 查询学生的课程
         return
@@ -61,42 +58,39 @@ def module():
 def task():
     user = User.get(session['email'])
     if user.role == 1:  # teachers
-        module = Module.get(session['email'])
-        if module is None:  # No module
-            return redirect(url_for('private.module'))
-        else:
-            return render_template('tasksPage.html', role=user.role, email=user.email)
+        modules = Module.get(session['email'])
+        tasks = []
+        for i in modules:
+            ts = Task.getAllByModule(i.id)
+            for j in ts:
+                j.module = Module.getById(j.MID).name
+                tasks.append(j)
+        return render_template('tasksPage.html', role=user.role, email=user.email, tasks=tasks)
     else:
         # 查询学生的任务
         return
 
 
-@private.route('/createM/', methods=['get'])
-def createM():
-    if session['role'] == 1:
-        return render_template('createM.html')
-    else:
-        return "You have no power to do this"
-
-
 @private.route('/createModule/', methods=['post'])
 def createModule():
     if session['role'] != 1:
-        return
+        return "You have no power to do this"
     name = request.form.get("name")
     module = Module(session['email'], name)
     module.put()
-    return redirect(url_for("private.innerModule"))
+    return redirect(url_for("private.module"))
 
 
-@private.route('/m/teacher/', methods=['get'])
-def innerModule():
-    if session['role'] != 1:
-        return "You have no power to do this"
-    email = session['email']
-    module = Module.get(email)
-    file_list = Resource.getAllByModule(module.id)
-    return render_template('moduleInner.html', email=email, module=module, leader=session['name'], lr=file_list)
+@private.route('/moduleInfo/<id>/', methods=['get'])
+def moduleInfo(id):
+    modu = Module.getById(id)
+    user = User.get(modu.email)
+    tasks = []
+    ts = Task.getAllByModule(modu.id)
+    for j in ts:
+        j.module = Module.getById(j.MID).name
+        tasks.append(j)
+    return render_template('moduleInfo.html', tasks=tasks, module=modu, leader=user.name)
 
 
 @private.route('/upload/', methods=['get'])
@@ -104,27 +98,6 @@ def uploadView():
     if session['role'] != 1:
         return "You have no power to do this"
     return render_template('up.html')
-
-
-@private.route('/uploadFile/', methods=['post'])
-def uploadFile():
-    if session['role'] != 1:
-        return "You have no power to do this"
-    file_list = request.files.getlist('files[]')
-    mid = Module.get(session['email']).id
-    names = [i.name for i in Resource.getAllByModule(mid)]
-    for i in file_list:
-        if i.filename in names:
-            continue
-        resource = Resource(mid, i)
-        resource.put()
-    return jsonify({'code': '0'})
-
-
-@private.route('/download/<id>/', methods=['get', 'post'])
-def download(id):
-    file = Resource.get(id)
-    return send_from_directory(file.realpath, file.name, as_attachment=True)  # as_attachment=True 一定要写，不然会变成打开，而不是下载
 
 
 @private.route('/downloadTask/<id>/', methods=['get', 'post'])
@@ -138,30 +111,11 @@ def delete():
     if session['role'] != 1:
         return "You have no power to do this"
     id = request.form.get('id')
-    file = Resource.get(id)
-    if file is None:
+    modu = Module.getById(id)
+    if modu is None:
         return jsonify({'code': '1'})
-    file.dele()
+    modu.dele()
     return jsonify({'code': '0'})
-
-
-@private.route('/deleteModule/', methods=['post'])
-def deleteModule():
-    if session['role'] != 1:
-        return "You have no power to do this"
-    module = Module.get(session['email'])
-    module.dele()
-    return jsonify({'code': 0})
-
-
-@private.route('/tasksList/', methods=['get'])
-def tasksList():
-    if session['role'] != 1:
-        return "You have no power to do this"
-    email = session['email']
-    module = Module.get(email)
-    tasks = Task.getAllByModule(module.id)
-    return render_template('taskList.html', email=email, module=module, leader=session['name'], tasks=tasks)
 
 
 @private.route('/deleteTask/', methods=['post'])
@@ -176,15 +130,17 @@ def deleteTask():
     return jsonify({'code': '0'})
 
 
-@private.route('/tasksCreatePage/', methods=['get'])
+@private.route('/tasksCreatePage/', methods=['post'])
 def tasksCreatePage():
+    mid = request.form.get('mid')
     if session['role'] != 1:
         return "You have no power to do this"
-    return render_template("taskCreatePage.html")
+    return render_template("taskCreatePage.html", mid=mid, studentNum=75)
 
 
 @private.route('/createTask/', methods=['post'])
 def createTask():
+    mid = request.form.get('mid')
     name = request.form.get('name')
     des = request.form.get('des')
     file = request.files.get('file')
@@ -192,11 +148,10 @@ def createTask():
     et = request.form.get('endTime')
     member = request.form.get('member')
     group = request.form.get('group')
-    print(file)
-    print("M: "+member)
-    print("G: "+group)
-    module = Module.get(session['email'])
-    task = Task(module.id, name, st, et, des, file)
+    print("M: " + member)
+    print("G: " + group)
+    if file.filename is "":
+        file = None
+    task = Task(mid, name, st, et, des, file)
     task.put()
-    tasks = Task.getAllByModule(module.id)
-    return redirect(url_for('private.tasksList', email=session['email'], module=module, leader=session['name'], tasks=tasks))
+    return redirect(url_for('private.task'))

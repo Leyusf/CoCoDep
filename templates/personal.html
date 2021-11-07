@@ -17,7 +17,10 @@
     <!-- STYLES -->
     <link rel="stylesheet" type="text/css" href="/static/css/plugins.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/personal.css" />
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/static/js/personal.js"></script>
+
     <!-- /STYLES -->
 </head>
 
@@ -38,9 +41,9 @@
             <div class="resumify_tm_mobile_menu_wrap">
                 <div class="mob_menu">
                     <ul>
-                        <li><a href="/personal/{{ email }}">About</a></li>
-                        <li><a href="/resume/{{ email }}">Resume</a></li>
-                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify</a></li>
+                        <li><a href="/personal/{{ email }}">About Me</a></li>
+                        <li><a href="/resume/{{ email }}">My Resume</a></li>
+                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify Info</a></li>
                     </ul>
                 </div>
             </div>
@@ -48,11 +51,11 @@
         <div class="resumify_tm_submenu_box"></div>
         <div class="resumify_tm_leftpart">
             <div class="inner_wrap">
-                <div class="menu_list scrollable">
+                <div class="menu_list scrollable" style="padding-top: 0px">
                     <ul>
-                        <li><a href="/personal/{{ email }}">About</a></li>
-                        <li><a href="/resume/{{ email }}">Resume</a></li>
-                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify</a></li>
+                        <li><a href="/personal/{{ email }}">About Me</a></li>
+                        <li><a href="/resume/{{ email }}">My Resume</a></li>
+                        <li><a href="/modify/" name="modify" flag="{{ flag }}" style="display: none">Modify Info</a></li>
                         <script type="text/javascript">
                             $("a[name='modify']").each(function () {
                                 if ($(this).attr("flag")==1){
@@ -133,7 +136,28 @@
                                             class="animate"><span>I'm <span class="name">{{ name }}</span></span></span></h3>
                                 </div>
                                 <div class="description">
-                                    <p>{{ sign }}</p>
+                                    <p><textarea style="border: 0px;font-size: 15px;background-color: #f5f5f5" id="sign" flag="{{ flag }}">{{ sign }}</textarea></p>
+                                        <script type="text/javascript">
+                                            if ($("#sign").attr("flag")==1){
+                                                $("#sign").attr("disabled",false)
+                                            }
+                                            else{
+                                                $("#sign").attr("disabled","true")
+                                            }
+                                            $("#sign").blur(function (){
+                                                $.ajax({
+                                                    type:"POST",
+                                                    url:"/setSign/",
+                                                    data:{
+                                                        "sign":$('#sign').val()
+                                                    },
+                                                    dataType:'json',
+                                                    success:function(data) {
+                                                      $("#sign").val(data['msg'])
+                                                  }
+                                                })
+                                            })
+                                        </script>
                                 </div>
                             </div>
                         </div>
@@ -147,6 +171,7 @@
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/plugins.js"></script>
     <script src="/static/js/init.js"></script><!-- /SCRIPTS -->
+
 </body>
 
 </html>

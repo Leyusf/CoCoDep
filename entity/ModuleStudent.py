@@ -1,5 +1,4 @@
 from app import models, app
-from entity.Resource import Resource
 from entity.Task import Task
 
 

@@ -1,5 +1,5 @@
 * {  margin: 0;  padding: 0;  box-sizing: border-box;  font-family: 'Poppins', sans-serif;}
-body {  height: 100vh;  display: flex;  justify-content: center;  align-items: center;}
+body {  padding-top: 40px; padding-bottom: 40px;  display: flex;  justify-content: center;  align-items: center;}
 form {  border: 2px solid #D09B52;  padding: 40px 10px 0px 40px;  width: 70%;  max-width: 700px;  border-radius: 20px;}
 #focus {  border: 3px solid #fef6fb;  box-shadow: 0 0 10px 0 #D09B52;  position: absolute;  transition: width .2s ease,  height .2s ease,  left .2s ease,  top .2s ease,  border-radius .2s ease;  pointer-events: none;  z-index: 5;  border-radius: 10px;  display: none;}
 h1 {  margin-bottom: 30px;  font-size: 2em;  color: #000;}input {  padding: 10px 15px;  border-radius: 10px;  transition: .3s ease;  color: #868283;}
