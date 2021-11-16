@@ -237,6 +237,11 @@ input::placeholder {
   align-items: center;
   margin-top: 35px;
 }
+.user_options-forms .forms_check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .user_options-forms .forms_buttons-forgot {
   font-family: "Montserrat", sans-serif;
   letter-spacing: 0.1rem;
