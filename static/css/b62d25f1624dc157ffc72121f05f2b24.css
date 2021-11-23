@@ -109,3 +109,90 @@ body #main-nav.bit-menu-float .sub-nav li:hover>a,body #main-nav.bit-menu-float 
     background:#83dbb3;
     color:#fff
 }
+.contact_box{
+    padding: 40px 30px;
+}
+.contact_box p{
+    padding: 5px;
+}
+.contact_input{
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 50%;
+    outline-style: none;
+    border:none;
+    border-bottom: 1px solid #000
+}
+.contact_btn{
+    margin-top: 10px;
+    padding: 10px;
+    width: 200px;
+    border: 0px;
+    background-color: #efdddd;
+}
+.contact_btn:hover{
+    background-color: #c9c9c9;
+}
+.module_row1{
+    background-color: #f1d5d5;
+    height: 52px;
+    font-size: 17px;
+    line-height: 50px;
+    text-align: center;
+}
+.module_list1{
+    border: 1px palevioletred solid;
+    height: 52px;
+}
+.module_row0{
+    background-color: #dcf1d5;
+    height: 52px;
+    font-size: 17px;
+    line-height: 50px;
+    text-align: center;
+}
+.module_list0{
+    border: 1px #c0db70 solid;
+    height: 52px;
+}
+.module_btn1{
+
+}
+.module_btn1:hover{
+    background-color: #c9c9c9;
+}
+.module_btn0{
+
+}
+.module_btn0:hover{
+    background-color: #c9c9c9;
+}
+.menu_btn{
+    background-color: #dcf1d5;
+    border: 1px #c0db70 solid;
+    height: 52px;
+    font-size: 17px;
+    line-height: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.menu_btn:hover{
+    background-color: #c1e399;
+}
+.menu_btn_d{
+    background-color: #efdddd;
+    border: 1px palevioletred solid;
+    height: 52px;
+    font-size: 17px;
+    line-height: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.menu_btn_d:hover{
+    background-color: #f8a49a;
+}
+.menu {
+    background-color: #e2f8e7;
+    border: 2px #c1dab9 solid;
+    border-radius: 5px;
+}

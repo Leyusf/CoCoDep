@@ -11348,7 +11348,5 @@ function revslider_showDoubleJqueryError(sliderID) {
 	errorMessage += "<br>&nbsp;&nbsp;&nbsp; 2. Find the double jquery.js include and remove it.";
 	errorMessage = "<span style='font-size:16px;color:#BC0C06;'>" + errorMessage + "</span>"
 		jQuery(sliderID).show().html(errorMessage);
-}
-
-;
+};
 

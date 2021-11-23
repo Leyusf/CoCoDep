@@ -27,6 +27,7 @@ models = SQLAlchemy(app)
 
 from entity.User import User
 from entity.Module import Module
+from entity.Contact import Contact
 
 
 # models.drop_all()
@@ -59,6 +60,23 @@ def launch():
 @app.route('/lor/')
 def lor():
     return render_template('lor.html')
+
+
+@app.route('/contact/', methods=['post'])
+def contact():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    contact = Contact(email, name, phone)
+    res = contact.put()
+    if res is True:
+        return jsonify({'code': 0, 'msg': 'Sent successfully'})
+    return jsonify({'code': 1, 'msg': 'Please wait for us to contact you'})
+
+
+@app.route('/forgetpwd/', methods=['get'])
+def forget():
+    return render_template('forgetpwd.html')
 
 
 # 注册蓝图

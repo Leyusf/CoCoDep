@@ -54,6 +54,12 @@ FORM.on("focusout", function(e) {
             if ($(this).val() != ""){
                 let arr=$(this).val().split( '\\' );
                 let fileName=arr[arr.length-1];
+                let fileType=fileName.split('.')[fileName.split('.').length-1]
+                if (fileType!="pdf"&&fileType!="doc"&&fileType!="docx"&&fileType!="zip"){
+                    alert('Only accept files in the following formats:\n.pdf .doc .docx .zip')
+                    $(this).val(null)
+                    return
+                }
                 $("#fileBox").css('display','block')
                 $("#fileBox").attr('placeholder',fileName)
             }

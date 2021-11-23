@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/b62d25f1624dc157ffc72121f05f2b24.css" type="text/css" media="all" /> <!-- Cache! -->
+	<link href="/static/css/uploader.css" rel="stylesheet" type="text/css">
+</head>
+<body style="background-color: white">
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8" style="padding: 50px">
+            <div style="background-color: whitesmoke;padding: 20px;border-radius: 5px">
+                <form action="/validate_f/" method="post" id="form">
+                    <label style="font-size: 20px;color:black;">Your Email:<br>
+                        <input placeholder="Your Email" name="email" id="email" class="contact_input" style="margin-top: 15px;width: 500px" required>
+                    </label>
+                    <br><button type="button" class="contact_btn" id="send">Send captcha</button>
+                    <label style="font-size: 20px;color: black;display: none;padding-top: 20px;" id="captcha" >Captcha:<br>
+                        <input placeholder="Captcha" class="contact_input" style="margin-top: 15px;width: 500px" required name="code">
+                    </label>
+                    <button type="submit" class="contact_btn" id="submit" style="display: none">Reset password</button>
+                </form>
+                <script src="/static/js/jquery.form.js"></script>
+                <script type="text/javascript">
+                    $("#send").click(function () {
+                        var email = $("#email").val()
+                        if (email==""||email==null){
+                            alert("Wrong email")
+                            return
+                        }
+                        $.ajax({
+                            url:'/forget/'+ email,
+                            type:'get',
+                            datatype: 'json',
+                            success:function (data) {
+                                if (data['code']==-1){
+                                    alert(data['msg'])
+                                    return
+                                }
+                                else {
+                                    $("#captcha").css('display','block')
+                                    $("#send").disabled = true; //将按钮置为不可点击
+                                    $("#submit").css('display','block')
+                                    alert("Email has been sent.")
+                                }
+                            }
+                        })
+                    })
+                    $(function () {
+                            $("#form").ajaxForm(function (data) {
+                                    alert(data['msg'])
+                                }
+                            );
+                        });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

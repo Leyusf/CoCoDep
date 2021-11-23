@@ -38,6 +38,10 @@
 	<!--[if lt IE 9]>
 	<script src="http://w-29259-50985-66763.1061471149.sites.cnfree03.qifeiye.com/FeiEditor/bitSite/js/respond.min.js"></script>
 	<![endif]-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
 	<style type="text/css" id="static-stylesheet"></style>
 	<link rel="stylesheet" href="/static/css/b62d25f1624dc157ffc72121f05f2b24.css" type="text/css" media="all" /> <!-- Cache! -->
 	<link rel="stylesheet" href="/static/css/normalize.min.css">
@@ -62,33 +66,16 @@
 			<style type="text/css" >
 </style>
 
-		<script type="text/javascript">
-
-            var dtGlobals={};dtGlobals.isMobile=(/(Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|windows phone)/.test(navigator.userAgent));dtGlobals.isAndroid=(/(Android)/.test(navigator.userAgent));dtGlobals.isiOS=(/(iPhone|iPod|iPad)/.test(navigator.userAgent));dtGlobals.isiPhone=(/(iPhone|iPod)/.test(navigator.userAgent));dtGlobals.isiPad=(/(iPad)/.test(navigator.userAgent));dtGlobals.isBuggy=(navigator.userAgent.match(/AppleWebKit/)&&typeof window.ontouchstart==='undefined'&&!navigator.userAgent.match(/Chrome/));dtGlobals.isWindowsPhone=navigator.userAgent.match(/IEMobile/i);dtGlobals.customColor='red';if(dtGlobals.isMobile){document.documentElement.className+=" mobile-true"}else{document.documentElement.className+=" mobile-false"}dtGlobals.logoURL=false;dtGlobals.logoH=false;dtGlobals.logoW=false;
-
-            dtGlobals.logoEnabled = 1;dtGlobals.curr_id = '5365';dtGlobals.logoURL = '/static/images/logo.png';dtGlobals.logoW = '95';dtGlobals.logoH = '45';dtGlobals.qfyname = '起飞页';dtGlobals.id = '6155391f553a0';dtGlobals.language = '1';smartMenu = 1;document.cookie='resolution='+Math.max(screen.width,screen.height)+'; path=/';
-			dtGlobals.gallery_bgcolor = 'rgba(51,51,51,1)';dtGlobals.gallery_showthumbs = '0';dtGlobals.gallery_style = '';dtGlobals.gallery_autoplay = '0';dtGlobals.gallery_playspeed = '3';dtGlobals.gallery_imagesize = '100';dtGlobals.gallery_imageheight = '100';dtGlobals.gallery_stopbutton = '';dtGlobals.gallery_thumbsposition = '';dtGlobals.gallery_tcolor = '#fff';dtGlobals.gallery_tsize = '16';dtGlobals.gallery_dcolor = '#fff';dtGlobals.gallery_dsize = '14';dtGlobals.gallery_tfamily = '';dtGlobals.gallery_dfamily = '';dtGlobals.gallery_blankclose = '0';dtGlobals.gallery_arrowstyle = '0';dtGlobals.fm_showstyle = '';dtGlobals.fm_showspeed = '';dtGlobals.cdn_url = 'https://ccdn.goodq.top';dtGlobals.googlekey = '';dtGlobals.qfymodel = "1";
-			            			var socail_back_url = '';
-
-		</script>
 
 		<style type="text/css" media="print">#qfadminbar { display:none; }</style>
 </head>
 
 
 <body  class="home page page-id-5365 page-template-default logged-in admin-bar no-customize-support image-blur widefull_header2 widefull_footer2 widefull_topbar2 free_public btn-flat content-fullwidth qfe-js-composer js-comp-ver-4.0.1 vc_responsive"  data-pid="5365" data-pkey="b9b5b39c64d6a76af058efa5a554516d">
-    <script>
-        var Random = function (min, max) {return Math.round(Math.random() * (max - min)) + min;}
-        //apm normal access
-        if(Random(1, 20) == 1){
-            !(function(c,b,d,a){c[a]||(c[a]={});c[a].config={pid:"c9ihesw3jb@ccca834f41b7459",appType:"web",imgUrl:"https://arms-retcode.aliyuncs.com/r.png?"};
-                with(b)with(body)with(insertBefore(createElement("script"),firstChild))setAttribute("crossorigin","",src=d)
-            })(window,document,"/static/js/bl.js","__bl");
-        }
-    </script>
 
 
-<div   id="page" backgroundSize='true' class=' wide ' style="min-height: calc(100vh - 153px);">
+
+<div   id="page" backgroundSize='true' class=' wide ' style="min-height: calc(100vh - 143px);">
 	<header id="header" class="logo-left  mobiletopbottom headerPM menuPosition" role="banner"><!-- class="overlap"; class="logo-left", class="logo-center", class="logo-classic" -->
 		<div class="wf-wrap">
 			<div style="display: inline">
@@ -152,64 +139,124 @@
         .bit-html section.section.qfy-row-2-6156904ae0ed9754510{padding-left:15px;padding-right:15px;padding-top:20px;padding-bottom:0;margin-top:0;margin-bottom: !important;min-height:0;}}
             </style>
 
-
-            <div  class="section-background-overlay background-overlay grid-overlay-0 " style="background-color: #ffffff;"></div>
-        <div class="container" style="padding-top: 20px;padding-bottom: 40px;">
-            {% if role == 1 %}
-{#                <iframe id="iframe" src="/m/teacher/" frameborder="0" width="100%" height="800px"></iframe>#}
-                <div>
-                    <form method="post" action="/createModule/" style="display: inline">
-                        <input type="text" class="createInput" placeholder="Module Name" name="name" required>
-                        <input type="submit" class="createBtn" value="CREATE">
-                    </form>
+        <div class="container">
+            <div class="row">
+                <div class="module_row1">
+                    <div class="col-md-3 module_list1">
+                        Module Code
+                    </div>
+                    <div class="col-md-3 module_list1">
+                        Module Name
+                    </div>
+                    <div class="col-md-3 module_list1">
+                        Module Leader
+                    </div>
+                    <div class="col-md-3 module_list1">
+                        Operation
+                    </div>
                 </div>
-                <div class="tbl">
-                    <ul class="items-group">
-                        {% for i in modules %}
-                            <li class="item" style="left: 0px; opacity: 1;padding-left:5px;padding-right: 5px;border: 1px #4fc08d solid;border-radius: 7px;background-color: white">
-                                <span class="text"><a style="text-decoration: none;color:#4fc08d;font-size:14px;" href="/moduleInfo/{{ i.id }}">{{i.id}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ i.name }}</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ name }}</span>
-                                <span class="icon" style="padding-top: 2px;" id="{{ i.id }}">X</span>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <script type="text/javascript">
-                        $(".icon").on('click',function (){
-                            let id = $(this).attr('id')
-                            var r = confirm("Delete this?")
-                            if (r==true){
-                                $.ajax({
-                                type:'post',
-                                dataType:'json',
-                                data:{"id":id},
-                                url:'/delete/',
-                                success: function (data) {
-                                            if (data['code']==0){
-                                                window.location.reload()
-                                            }
-                                        }
+            {% for i in modules %}
+                {% set it = (loop.index + 1)%2 %}
+                <div class="module_row{{ it }}">
+                    <div class="col-md-3 module_list{{ it }}">
+                        {{ i.id }}
+                    </div>
+                    <div class="col-md-3 module_list{{ it }}">
+                        {{ i.name }}
+                    </div>
+                    <div class="col-md-3 module_list{{ it }}">
+                        {{ name }}
+                    </div>
+                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">
+                        Info
+                    </div>
+                </div>
+            {% endfor %}
+                {% set it = modules|length%2 %}
+                <div class="module_row{{ it }}">
+                    <form>
+                        <div class="col-md-3 module_list{{ it }}" contenteditable="true" id="module_code" spellcheck="false">
+                            New Module Code
+                        </div>
+                        <div class="col-md-3 module_list{{ it }}" contenteditable="true" id="module_name" spellcheck="false">
+                            New Module Name
+                        </div>
+                        <div class="col-md-3 module_list{{ it }}" id="module_leader">
+                            {{ name }}
+                        </div>
+                        <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="createModule()">
+                            Create
+                        </div>
+                        <script type="text/javascript">
+                            $("#module_code").focus(function () {
+                                if (trim($(this).html())=="New Module Code")
+                                    $(this).html("")
                             })
+                            $("#module_code").blur(function () {
+                                if ($(this).html()=="")
+                                    $(this).html("New Module Code")
+                            })
+                            $("#module_name").focus(function () {
+                                if (trim($(this).html())=="New Module Name")
+                                    $(this).html("")
+                            })
+                            $("#module_name").blur(function () {
+                                if ($(this).html()=="")
+                                    $(this).html("New Module Name")
+                            })
+
+                            function trim(str){
+                        　　     return str.replace(/(^\s*)|(\s*$)/g, "");
+                        　　 }
+                            function hasSpace(t){
+                                if (t.indexOf(" ")==-1){
+                                    return false
+                                }
+                                return true
                             }
-                        })
-                    </script>
+                            function createModule() {
+                                var code = trim($("#module_code").html())
+                                var name = trim($("#module_name").html())
+                                if (hasSpace(code)==true){
+                                    alert("Module code should not include spaces")
+                                    return;
+                                }
+                                $.ajax({
+                                      type:"POST",
+                                      url:"/createModule/",
+                                      dataType:'json',
+                                      data:{
+                                        "name":name,
+                                        "id":code
+                                      },
+                                    success:function (data) {
+                                        if (data['code']==0){
+                                            location.reload();
+                                        }
+                                        else{
+                                            alert(data['msg'])
+                                        }
+                                    }
+                                })
+                            }
+                            function checkInfo(id) {
+                                location.href = "/moduleInfo/" + id + "/"
+                            }
+                        </script>
+                    </form>
+
                 </div>
-
-
-            {% else %}
-
-            {% endif %}
-
+            </div>
         </div>
+
 
 </section>                             </div>
 
-
-                         <div class="clear"></div>
                     </div>
               </div>
         </div><!-- END .page-wrapper -->
-         <div class="clear"></div>
 </div>
-<div class="clear"></div>
+
 
 
 			</div>
@@ -267,21 +314,6 @@
 
 <!--  ************end************* -->
 </footer>
-
-<script type='text/javascript'>
-/* <![CDATA[ */
-/* dt-plugins */
-var dtLocal = {"passText":"To view this protected post, enter the password below:","moreButtonAllLoadedText":"Everything is loaded","postID":"5365","ajaxurl":"http:\/\/w-29259-50985-66763.1061471149.sites.cnfree03.qifeiye.com\/http:\/\/w-29259-50985-66763.1061471149.sites.cnfree03.qifeiye.com\/admin\/admin-ajax.php","contactNonce":"e8670433c6","ajaxNonce":"b691dba87a","pageData":{"type":"page","template":"page","layout":null},"themeSettings":{"smoothScroll":"on"}};
-/* thickbox */
-var thickboxL10n = {"next":"\u4e0b\u4e00\u5f20 >","prev":"< \u4e0a\u4e00\u5f20","image":"\u56fe\u7247","of":"of","close":"\u5173\u95ed","noiframes":"This feature requires inline frames. You have iframes disabled or your browser does not support them.","loadingAnimation":"\/\/f.goodq.top\/FeiEditor\/bitSite\/images\/preloader.gif"};
-
-/* ]]> */
-</script>
-<script type="text/javascript" src="/static/js/e8e7fb72e84bf486cfea49ed2967c143.js">/*Cache!*/</script>
-<link rel="stylesheet" href="/static/css/4f98583aeaeeed2c71acbf8dd18c5144.css" type="text/css" media="all" /> <!-- Cache! -->
-<style type='text/css'>
-
-</style>
-<style>html.qf-toolbar{padding:0px;}</style>		<div style='display:none;'></div>    </body>
+</body>
 
 </html>

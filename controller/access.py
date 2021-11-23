@@ -71,6 +71,20 @@ def validate_r(code):
     return jsonify({"code": -1})
 
 
+@access.route('/validate_f/', methods=['POST'])
+def validate_f():
+    email = request.form.get('email')
+    code = request.form.get('code')
+    if validate(code):
+        captcha_drop()
+        pwd = str(uuid.uuid4())[0:12]
+        user = User.get(email)
+        user.set_password(pwd)
+        email_send_html_ft(email, pwd)
+        return jsonify({"code": 0, 'msg': 'reset password successfully'})
+    return jsonify({"code": -1, 'msg': 'failed to reset password'})
+
+
 # 发送一个html
 @access.route('/email_captcha/<email>', methods=['POST'])
 def send_email(email):
@@ -140,11 +154,9 @@ def resume(email):
 def forget(email):
     user = User.get(email)
     if user is None:
-        return jsonify({'code': -1})
-    pwd = str(uuid.uuid4())[0:12]
-    user.set_password(pwd)
-    email_send_html_ft(email, pwd)
-    return jsonify({'code': 0})
+        return jsonify({'code': -1, 'msg': 'Email not registered'})
+    email_send_html(email)
+    return jsonify({'code': 0, 'msg': 'Send successfully'})
 
 
 @access.route('/setSign/', methods=['post'])

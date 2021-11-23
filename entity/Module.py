@@ -6,13 +6,14 @@ from entity.Task import Task
 
 class Module(models.Model):
     __tablename__ = 'module'  # 表名
-    id = models.Column(models.Integer(), primary_key=True, nullable=False, autoincrement=True)
+    id = models.Column(models.String(10), primary_key=True, nullable=False)
     email = models.Column(models.String(24), primary_key=True, nullable=False)
-    name = models.Column(models.String(12), nullable=False)
+    name = models.Column(models.String(50), primary_key=True, nullable=False)
 
-    def __init__(self, email, name):
+    def __init__(self, id, email, name):
         self.email = email
         self.name = name
+        self.id = id
 
     def get(email):
         try:
@@ -23,6 +24,12 @@ class Module(models.Model):
     def getById(id):
         try:
             return Module.query.filter(Module.id == id).first()
+        except:
+            return None
+
+    def getByName(name):
+        try:
+            return Module.query.filter(Module.name == name).first()
         except:
             return None
 
@@ -37,16 +44,8 @@ class Module(models.Model):
         return True
 
     def dele(self):
-        resources = Resource.getAllByModule(self.id)
-        for i in resources:
-            i.dele()
         tasks = Task.getAllByModule(self.id)
         for i in tasks:
             i.dele()
-        path = os.path.join(app.root_path,  "MODULE_"+str(self.id))
-        try:
-            os.rmdir(path)
-        except:
-            pass
         Module.query.filter(Module.id == self.id).delete()
         models.session.commit()

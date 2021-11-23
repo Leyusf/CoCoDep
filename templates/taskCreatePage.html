@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:400,700&amp;display=swap'>
     <link rel="stylesheet" href="/static/css/task.css">
+<script type='text/javascript' src='/static/js/jquery.js'></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.js"></script>
     <script>
         let studentNum = {{studentNum}};
     </script>
@@ -14,7 +16,7 @@
 
 <body>
     <!-- partial:index.partial.html -->
-    <form autocomplete="off" action="/createTask/" method="post" enctype='multipart/form-data' onsubmit="return check()">
+    <form autocomplete="off" action="/createTask/" method="post" enctype='multipart/form-data' onsubmit="return check()" id="form">
         <div id="focus"></div>
         <h1>Task info</h1>
         <input type="text" placeholder="Name" autocomplete="no" name="name" required><br>
@@ -32,7 +34,7 @@
         <input type="text" name="member" style="display: none" id="memberBox">
         <input type="button" value="Add Solution" onclick="addSolution()" style="display: none" id="addS">
         <input type="show" placeholder="File" style="display: none" id="fileBox" disabled>
-        <input type="button" value="Submit File" onclick="UploadFile()">
+        <input type="button" value="Upload File" onclick="UploadFile()">
         <input type="file" placeholder="File" style="display: none" id="file" name="file">
         <div style="display: inline-block;width: 100%">
             <p>&nbsp;Start date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -43,9 +45,25 @@
         </div>
         <input type="date" half placeholder="Start Time" autocomplete="no" name="startTime" required>
         <input type="date" half placeholder="End Time" autocomplete="no" name="endTime" required>
-        <input type="submit" value="Send it">
+        <input type="submit" value="Submit">
+<script src="/static/js/jquery.form.js"></script>
+
+                    <script type="text/javascript">
+                        $(function () {
+                            $("#form").ajaxForm(function (data) {
+                                    if (data['code']!=0){
+                                        alert(data['msg'])
+                                    }
+                                    else{
+                                        alert(data['msg'])
+                                        top.location.href = '/task/'
+                                    }
+                                }
+                            );
+                        });
+
+                    </script>
     </form><!-- partial -->
-    <script src='/static/js/jquery.min.js'></script>
     <script src="/static/js/task.js"></script>
 </body>
 
