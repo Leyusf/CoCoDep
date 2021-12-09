@@ -137,5 +137,20 @@ function check(){
     }
     $("#groupBox").val(group)
     $("#memberBox").val(member)
-    return true
+    return checkDate()
+}
+
+function checkDate() {
+    var start = new Date($("#start").val()).getTime();
+    var end = new Date($("#end").val()).getTime();
+    var now = new Date().getTime();
+    if (start < now){
+        alert("The start date cannot be less than the current date")
+        return false;
+    }
+    else if (start >= end){
+        alert("The end date must be more than the start date")
+        return false;
+    }
+    return true;
 }

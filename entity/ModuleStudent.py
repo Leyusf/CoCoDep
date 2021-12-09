@@ -1,22 +1,26 @@
-from app import models, app
-from entity.Task import Task
+from app import models
 
 
 class MSTable(models.Model):
     __tablename__ = 'modulestudent'  # 表名
-    id = models.Column(models.Integer(), primary_key=True, nullable=False, autoincrement=True)
-    MID = models.Column(models.Integer(), nullable=False, autoincrement=True)
-    SID = models.Column(models.Integer(),  nullable=False, autoincrement=True)
+    MID = models.Column(models.String(10), primary_key=True, nullable=False)
+    email = models.Column(models.String(24), primary_key=True, nullable=False)
 
-    def __init__(self, MID, SID):
+    def __init__(self, MID, email):
         self.MID = MID
-        self.SID = SID
+        self.email = email
 
-    def get(mid, sid):
+    def get(mid, email):
         try:
-            return MSTable.query.filter(MSTable.MID == mid, MSTable.SID == sid).first()
+            return MSTable.query.filter(MSTable.MID == mid, MSTable.email == email).first()
         except:
             return None
+
+    def getModulesByEmail(email):
+        try:
+            return MSTable.query.filter(MSTable.email == email).all()
+        except:
+            return []
 
     def getAllByModule(mid):
         try:
@@ -29,5 +33,5 @@ class MSTable(models.Model):
         return True
 
     def dele(self):
-        MSTable.query.filter(MSTable.id == self.id).delete()
+        MSTable.query.filter(MSTable.MID == self.MID, MSTable.email == self.email).delete()
         models.session.commit()

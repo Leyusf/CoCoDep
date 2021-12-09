@@ -89,7 +89,7 @@
 
 		<!-- !- Navigation -->
 		<nav style="padding-top:20px;padding-right:20px;float: right" id="navigation" class="wf-td"   bitDataAction="site_menu_container" bitDataLocation="primary" >
-<ul id="main-nav" data-st="0" data-sp="0"  data-fh="0" data-mw="0" data-lh="48" class="mainmenu fancy-rollovers wf-mobile-hidden bit-menu-default underline-hover position-text-right"      data-bit-menu=underline-hover data-bit-float-menu=underline-hover ><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5428 menu-item-5581 level-arrows-on act"><a href="/module"><span>Module</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5365 current_page_item bit-menu-post-id-5365 menu-item-5583 first level-arrows-on"><a href="/task/"><span>Task</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5446 menu-item-5578 level-arrows-on"><a href="/ps/{{ email }}"><span>Personal Center</span></a></li></ul>
+<ul id="main-nav" data-st="0" data-sp="0"  data-fh="0" data-mw="0" data-lh="48" class="mainmenu fancy-rollovers wf-mobile-hidden bit-menu-default underline-hover position-text-right"      data-bit-menu=underline-hover data-bit-float-menu=underline-hover ><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5428 menu-item-5581 level-arrows-on act"><a href="/module"><span>Module</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5365 current_page_item bit-menu-post-id-5365 menu-item-5583 first level-arrows-on"><a href="/task/"><span>Task</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5446 menu-item-5578 level-arrows-on"><a href="/ps/{{ email }}"><span>Personal Center</span></a></li><li class=" menu-item menu-item-type-post_type menu-item-object-page bit-menu-post-id-5446 menu-item-5578 level-arrows-on "><a href="/logout/"><span>Log Out</span></a></li></ul>
 
 
 
@@ -165,17 +165,23 @@
                         {{ i.name }}
                     </div>
                     <div class="col-md-3 module_list{{ it }}">
-                        {{ name }}
+                        {{ i.leader }}
                     </div>
                     <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">
                         Info
                     </div>
                 </div>
             {% endfor %}
+            {% if role == 1 %}
                 {% set it = modules|length%2 %}
+                <br>
+                <br>
+                <br>
+                <br>
+                <h2>Create New Module</h2>
                 <div class="module_row{{ it }}">
                     <form>
-                        <div class="col-md-3 module_list{{ it }}" contenteditable="true" id="module_code" spellcheck="false">
+                        <div class="col-md-3 module_list{{ it }}" contenteditable="true" id="module_code"  spellcheck="false">
                             New Module Code
                         </div>
                         <div class="col-md-3 module_list{{ it }}" contenteditable="true" id="module_name" spellcheck="false">
@@ -193,7 +199,7 @@
                                     $(this).html("")
                             })
                             $("#module_code").blur(function () {
-                                if ($(this).html()=="")
+                                if (trim($(this).html())=="")
                                     $(this).html("New Module Code")
                             })
                             $("#module_name").focus(function () {
@@ -201,11 +207,12 @@
                                     $(this).html("")
                             })
                             $("#module_name").blur(function () {
-                                if ($(this).html()=="")
+                                if (trim($(this).html())=="")
                                     $(this).html("New Module Name")
                             })
 
                             function trim(str){
+                                str = str.replace(/&nbsp;/g," ")
                         　　     return str.replace(/(^\s*)|(\s*$)/g, "");
                         　　 }
                             function hasSpace(t){
@@ -239,13 +246,15 @@
                                     }
                                 })
                             }
-                            function checkInfo(id) {
-                                location.href = "/moduleInfo/" + id + "/"
-                            }
                         </script>
                     </form>
-
                 </div>
+            {% endif %}
+            <script type="text/javascript">
+                function checkInfo(id) {
+                    location.href = "/moduleInfo/" + id + "/1"
+                }
+            </script>
             </div>
         </div>
 
@@ -292,14 +301,13 @@
 	</div> </a>
 	<div  m-padding="0px 0px 0px 0px"  p-padding="0px 0 0 0" css_animation_delay="0" qfyuuid="qfy_column_text_x8cop" data-anitime='0.7' data-ani_iteration_count='1'  class="qfy-element qfy-text qfy-text-93218 qfe_text_column qfe_content_element  " style="position: relative;;;line-height:1.5em;;background-position:left top;background-repeat: no-repeat;;margin-top:0;margin-bottom:0;padding-top:0px;padding-bottom:0;padding-right:0;padding-left:0;border-radius:0px;" >
 		<div class="qfe_wrapper ">
-			<div style="text-align: center;"><span style="font-family:微软雅黑;"><span style="color:#FFFFFF;"><span style="font-size: 20px;">SWJTU leeds joint school</span></span></span></div>
+			<div style="text-align: center;"><span style="font-family:微软雅黑;"><span style="color:#FFFFFF;"><span style="font-size: 20px;">{{ Oname }}</span></span></span></div>
 
 <div>
 <div style="text-align: center;">
-<span style="color:#D3D3D3;"><span style="letter-spacing: 1px;"><span style="font-size: 12px;"><span style="font-family: 微软雅黑;">address：SWJTU CHENGDU SiChuan&nbsp;</span></span></span></span><span style="font-family: 微软雅黑; font-size: 12px; letter-spacing: 1px; color: rgb(211, 211, 211); word-spacing: normal;">Tel:&nbsp; 00000000000&nbsp;</span><span style="font-family: 微软雅黑; font-size: 12px; letter-spacing: 1px; color: rgb(211, 211, 211); word-spacing: normal;">Fax: 00000000000</span></div>
+<span style="font-family: 微软雅黑;">{{ Oinfo }}</span></div>
 
-<div style="text-align: center;"><span style="color:#D3D3D3;"><span style="letter-spacing: 1px;"><span style="font-size: 12px;">Email：847805259@qq.com&nbsp;</span></span></span><span style="font-size: 12px; letter-spacing: 1px; color: rgb(211, 211, 211); word-spacing: normal;"></span></div>
-</div>
+<div style="text-align: center;"><span style="font-size: 12px;">{{ Oemail }}</span></div></div>
 
 		</div>
 	</div> </div></div></div><style class="column_class qfy_style_class">@media only screen and (min-width: 992px){.qfy-column-9-61569c3bb809e942427 > .column_inner {padding-left:0;padding-right:0;padding-top:0;padding-bottom:10px;}.qfe_row .vc_span_class.qfy-column-9-61569c3bb809e942427 {};}@media only screen and (max-width: 992px){.qfy-column-9-61569c3bb809e942427 > .column_inner{margin:0 auto 0 !important;padding-left:0;padding-right:0;padding-top:;padding-bottom:10px;}.display_entire .qfe_row .vc_span_class.qfy-column-9-61569c3bb809e942427 {}.qfy-column-9-61569c3bb809e942427 > .column_inner> .background-overlay,.qfy-column-9-61569c3bb809e942427 > .column_inner> .background-media{width:100% !important;left:0 !important;right:auto !important;}}</style>        </div>

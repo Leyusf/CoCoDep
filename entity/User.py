@@ -16,7 +16,7 @@ class User(models.Model):
     sign = models.Column(models.String(120))
     experience = models.Column(models.String(200), default="******")
     workaddress = models.Column(models.String(20), default="******")
-    role = models.Column(models.Integer(), nullable=False, autoincrement=True)
+    role = models.Column(models.Integer(), nullable=False)
 
     def __init__(self, email, name, password, role):
         self.email = email
@@ -25,7 +25,6 @@ class User(models.Model):
         self.role = role
         f = open(file=os.path.join(app.root_path, 'static', 'images', 'headpic', '1.png'), mode='rb')
         self.headpic = base64.b64encode(f.read())
-
         self.sign = "I’m an independent creative freelancer focusing on web design,mobile application and UI design."
 
     def set_password(self, value):

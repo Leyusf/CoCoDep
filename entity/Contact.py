@@ -8,12 +8,12 @@ class Contact(models.Model):
     id = models.Column(models.Integer(), primary_key=True, nullable=False, autoincrement=True)
     email = models.Column(models.String(24), primary_key=True, nullable=False)
     name = models.Column(models.String(12), nullable=False)
-    phone = models.Column(models.String(20), nullable=False, autoincrement=True)
+    msg = models.Column(models.String(300), nullable=False)
 
-    def __init__(self, email, name, phone):
+    def __init__(self, email, name, msg):
         self.email = email
         self.name = name
-        self.phone = phone
+        self.msg = msg
 
     def get(email):
         try:

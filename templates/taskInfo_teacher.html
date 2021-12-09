@@ -38,13 +38,16 @@
 	<!--[if lt IE 9]>
 	<script src="http://w-29259-50985-66763.1061471149.sites.cnfree03.qifeiye.com/FeiEditor/bitSite/js/respond.min.js"></script>
 	<![endif]-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.form.js"></script>
+
 	<style type="text/css" id="static-stylesheet"></style>
 	<link rel="stylesheet" href="/static/css/b62d25f1624dc157ffc72121f05f2b24.css" type="text/css" media="all" /> <!-- Cache! -->
 	<link rel="stylesheet" href="/static/css/normalize.min.css">
-    <script src="/static/js/jquery-1.7.2.js"></script>
+
+
 <style type='text/css'>
 .iphorm-elements .iphorm-element-wrap-text input, .iphorm-elements .iphorm-element-wrap-captcha input, .iphorm-elements .iphorm-element-wrap-password input, .iphorm-elements .iphorm-element-wrap select, .iphorm-elements .iphorm-element-wrap textarea{
   WIDTH:100% !important;
@@ -63,11 +66,13 @@
 			<style type="text/css" >
 </style>
 
+
 		<style type="text/css" media="print">#qfadminbar { display:none; }</style>
 </head>
 
 
 <body  class="home page page-id-5365 page-template-default logged-in admin-bar no-customize-support image-blur widefull_header2 widefull_footer2 widefull_topbar2 free_public btn-flat content-fullwidth qfe-js-composer js-comp-ver-4.0.1 vc_responsive"  data-pid="5365" data-pkey="b9b5b39c64d6a76af058efa5a554516d">
+
 
 
 <div   id="page" backgroundSize='true' class=' wide ' style="min-height: calc(100vh - 143px);">
@@ -100,19 +105,12 @@
 			</div><!-- #branding -->
 		</div><!-- .wf-wrap -->
 	</header><!-- #masthead -->
-
+ <section class="bitBanner" id="bitBanner" bitdatamarker="bitBanner" bitdataaction="site_fix_container" >
+	</section>
 <div id="main" class="bit_main_content">
-
-
 		<div class="main-gradient"></div>
-
 		<div class="wf-wrap">
 			<div class="wf-container-main">
-
-
-
-
-
 			<div id="content" class="content" role="main">
 
 
@@ -132,58 +130,312 @@
         @media only screen and (max-width: 992px){
         .bit-html section.section.qfy-row-2-6156904ae0ed9754510{padding-left:15px;padding-right:15px;padding-top:20px;padding-bottom:0;margin-top:0;margin-bottom: !important;min-height:0;}}
             </style>
-                                  <div class="container">
+
+        <div class="container">
+           <div class="row">
+               <div class="col-md-2">
+                   <h1>{{ module.id }}</h1>
+               </div>
+               <div class="col-md-2">
+                   <h1>{{ module.name }}</h1>
+               </div>
+           </div>
             <div class="row">
-                <div class="module_row1">
-                    <div class="col-md-3 module_list1">
-                        Module
-                    </div>
-                    <div class="col-md-3 module_list1">
-                        Task Name
-                    </div>
-                    <div class="col-md-3 module_list1">
-                        Module Leader
-                    </div>
-                    <div class="col-md-3 module_list1">
-                        Operation
-                    </div>
+               <div class="col-md-12">
+                   <h4>Module leader: {{ module.leader }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Email: {{ module.email }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group number: {{ num_groups }}</h4>
+               </div>
+           </div>
+            <br>
+            <div class="row" >
+            {% if role == 1 %}
+               <div class="col-md-2 menu" style="padding-top: 10px">
+                    <div class="menu_btn" id="tasks">Tasks</div>
+                    <div class="menu_btn" id="students">Groups</div>
+                    <div class="menu_btn" id="createTask">Modify Task</div>
+                    <div class="menu_btn_d" id="delete">Delete</div>
+               </div>
+            {% else %}
+                <div class="col-md-1">
                 </div>
-            {% for i in tasks %}
-                {% set it = (loop.index + 1)%2 %}
-                <div class="module_row{{ it }}">
-                    <div class="col-md-3 module_list{{ it }}">
-                        {{ i.module }}
-                    </div>
-                    <div class="col-md-3 module_list{{ it }}">
-                        {{ i.name }}
-                    </div>
-                    <div class="col-md-3 module_list{{ it }}">
-                        {{ i.leader }}
-                    </div>
-                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">
-                        Info
-                    </div>
-                </div>
-            {% endfor %}
-                        <script type="text/javascript">
-                            function checkInfo(id) {
-                                location.href = "/taskInfo/" + id + "/1"
-                            }
-                        </script>
+            {% endif %}
+            {% if role == 1 %}
+                <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;display: none" id="taskInfo"><div class="row"><div class="col-md-12" style="text-align: center"><h2>{{ task.name }}</h2></div><br> <br> <br><div class="col-md-12" style="text-align: center"><h4> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group number: {{ num_groups }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Start: {{ task.start.strftime("%Y-%m-%d") }} <p id="endtimeTask">Deadline: {{ task.end.strftime("%Y-%m-%d") }}</p></h4></div> <br> <br><div class="col-md-1"></div><div class="col-md-10"><p style="color: black;font-size: 20px">{{ task.des }}</p></div><div class="col-md-1"></div><br><br><br>{% if task.filename != None %}<div class="col-md-1"></div><div class="col-md-10"><h3> Resource:   </h3></div><div class="col-md-1"></div><br> <br><div class="col-md-1"></div><div class="col-md-10"><a href="/downloadTask/{{ task.id }}/"><p style="color: blue;font-size: 17px" id="taskFile">{{ task.filename }}</p></a></div>{% endif %}</div></div>
+            <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;display: none" id="modify">
+                    <div class="row"><div class="col-md-12" style="text-align: center"><h2>{{ task.name }}</h2></div><br> <br> <br><div class="col-md-12" style="text-align: center"><h4> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group number: {{ num_groups }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Start: {{ task.start.strftime("%Y-%m-%d") }}  <p id="taskEnd">Deadline: {{ task.end.strftime("%Y-%m-%d") }}</p></h4></div> <br> <br><div class="col-md-1"></div>
+</div>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <p style="padding-bottom: 5px">Modify the description of the task:</p>
+        <input name="des" id="des_box" type="text" value="{{ task.des }}" style="height:40px;width: 90%;color: black;border-radius: 3px" onblur="updateDes()">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <p style="padding-bottom: 5px;padding-top:5px;width: 100%">Update the file:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update the end time:</p>
+        <input id="filename" type="text" value="{{ task.filename }}" style="height:40px;width: 40%;color: black;border-radius: 3px" readonly="readonly">
+        <form action="/updateFile/" enctype='multipart/form-data' method="post" id="upFile" style="display: none">
+            <input name="file" style="display: none" type="file" id="newFile">
+            <input name="id" style="display: none" type="text" value="{{ task.id }}">
+        </form>
+        <input type="date" value="{{ task.end.strftime("%Y-%m-%d") }}" style="width: 40%;color: black;border-radius: 3px;float: right;margin-right: 10%" id="endt">
+    </div>
+</div>
+<script type="text/javascript">
+    $("#endt").change(function () {
+        var time = $(this).val()
+        var startTime = new Date({{ task.start.strftime("%Y-%m-%d") }}).getTime()
+        var endTime = new Date(time).getTime()
+        var now = new Date().getTime()
+        if (endTime<=startTime){
+            alert("The end time must more than the start time")
+            return
+        }
+        if (endTime<=now){
+            alert("The end time must more than the current time")
+            return
+        }
+        $.ajax({
+            url:'/updateEndTime/',
+            type:'post',
+            dataType:'json',
+            data:{
+                "id":'{{ task.id }}',
+                "end": time
+            },
+            success:function(data) {
+                if (data['code']!=0)
+                    alert(data['msg'])
+                $('#taskEnd').html('Deadline: ' + data['msg'])
+                $('#endtimeTask').html('Deadline: ' + data['msg'])
+            }
+        })
+    })
+    function updateDes() {
+        var des = $("#des_box").val()
+        $.ajax({
+            url:'/updateDes/',
+            type:'post',
+            dataType:'json',
+            data:{
+                "id":'{{ task.id }}',
+                "des": des
+            },
+            success:function(data) {
+                if (data['code']!=0)
+                    alert(data['msg'])
+            }
+        })
+    }
+    $("#filename").click(function () {
+        $("#newFile").click()
+    })
+    $("#newFile").change(function () {
+        var file = $(this).val()
+        if (file == ""){
+            $(this).val(null)
+            return
+        }
+        let arr=$(this).val().split( '\\' );
+        let fileName=arr[arr.length-1];
+        let fileType=fileName.split('.')[fileName.split('.').length-1]
+        if (fileType!="pdf"&&fileType!="doc"&&fileType!="docx"&&fileType!="zip"){
+            alert('Only accept files in the following formats:\n.pdf .doc .docx .zip')
+            $(this).val(null)
+            return
+        }
+
+        $("#upFile").submit()
+    })
+    $(function () {
+        $("#upFile").ajaxForm(function (data) {
+                if (data['code']==0){
+                    $("#filename").val(data['msg'])
+                    $("#taskFile").html(data['msg'])
+                }
+            }
+        );
+    });
+</script>
+    </div>
+                <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;" id="show_box">
+                    <div class="row"> <div class="module_row1">
+                        <div class="col-md-4 module_list1">Group ID</div> <div class="col-md-4 module_list1">Number</div><div class="col-md-4 module_list1">Operation </div> </div>{% for i in groups %}{% set it = (loop.index + 1)%2 %} <div class="module_row{{ it }}"> <div class="col-md-4 module_list{{ it }}">{{ i.id }} </div> <div class="col-md-4 module_list{{ it }}">{{ i.number }} </div><div class="col-md-4 module_list{{ it }} module_btn{{ it }}" onclick="checkWork({{ i.id }})">Check </div> </div>{% endfor %} </div>
+
 
                 </div>
+            {% else %}
+                <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;margin-bottom: 40px;" id="taskInfo">
+                    <div class="row"><div class="col-md-12" style="text-align: center">
+                        <h2>{{ task.name }}</h2></div><br> <br> <br><div class="col-md-12" style="text-align: center">
+                        <h4> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group ID: {{ group.id }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Start: {{ task.start.strftime("%Y-%m-%d") }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Deadline: {{ task.end.strftime("%Y-%m-%d") }}</h4></div> <br> <br><div class="col-md-1"></div><div class="col-md-10"><p style="color: black;font-size: 20px">{{ task.des }}</p></div><div class="col-md-1"></div><br><br><br>{% if task.filename != None %}<div class="col-md-1"></div><div class="col-md-10"><h3> Resource:   </h3></div><div class="col-md-1"></div><br> <br><div class="col-md-1"></div><div class="col-md-10"><a href="/downloadTask/{{ task.id }}/"><p style="color: blue;font-size: 17px" id="taskFile">{{ task.filename }}</p></a></div>{% endif %}</div>
+
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                            <button class="open_btn">WorkSpace</button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <div class="module_row1">
+                                <div class="col-md-3 module_list1">
+                                    User ID
+                                </div>
+                                <div class="col-md-3 module_list1">
+                                    User Name
+                                </div>
+                                <div class="col-md-3 module_list1">
+                                    User Email
+                                </div>
+                                <div class="col-md-3 module_list1">
+                                    Operation
+                                </div>
+                            </div>
+                            {% for i in members %}
+                                {% set it = (loop.index + 1)%2 %}
+                                <div class="module_row{{ it }}">
+                                    <div class="col-md-3 module_list{{ it }}">
+                                        {{ i.id }}
+                                    </div>
+                                    <div class="col-md-3 module_list{{ it }}">
+                                        {{ i.name }}
+                                    </div>
+                                    <div class="col-md-3 module_list{{ it }}">
+                                        {{ i.email }}
+                                    </div>
+                                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkUser('{{ i.email }}')">
+                                        Info
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+           </div>
+        {% if role == 1 %}
+        <div class="row" style="margin-top: 20px;margin-bottom: 20px;" id="studentsBox">
+            <div class="col-md-4">
             </div>
+            <div class="col-md-1">
+                {% if page==1 %}
+                    <p style="float:left;font-size: 18px;color: #cccccc">Previous</p>
+                {% else %}
+                    <a id="pre"><p style="float:left;font-size: 18px;color: black">Previous</p></a>
+                {% endif %}
+            </div>
+            <div class="col-md-2">
+                <p style="text-align: center;font-size: 18px;color: #444444">{{ page }}/{{ num_page }}</p>
+            </div>
+            <div class="col-md-1">
+                {% if page==num_page %}
+                    <p style="float:right;font-size: 18px;color: #cccccc">Next</p>
+                {% else %}
+                    <a id="next"><p style="float:right;font-size: 18px;color: black">Next</p></a>
+                {% endif %}
+            </div>
+        {% endif %}
+        </div>
         </div>
 
 
+<script type="text/javascript">
+
+    $("#pre").click(function () {
+        location.href = '/taskInfo/{{ task.id }}/'+ ({{ page }}-1)
+    })
+    $("#next").click(function () {
+        location.href = '/taskInfo/{{ task.id }}/'+ ({{ page }}+1)
+    })
+    $("#tasks").click(function () {
+        $("#taskInfo").css('display','block')
+        $("#studentsBox").css('display','none')
+        $("#modify").css('display','none')
+        $("#show_box").css('display','none')
+
+    })
+    $("#students").click(function (){
+        var str = '<div class="row"> <div class="module_row1"> <div class="col-md-4 module_list1">Group ID</div> <div class="col-md-4 module_list1">Number</div><div class="col-md-4 module_list1">Operation </div> </div>{% for i in groups %}{% set it = (loop.index + 1)%2 %} <div class="module_row{{ it }}"> <div class="col-md-4 module_list{{ it }}">{{ i.id }} </div> <div class="col-md-4 module_list{{ it }}">{{ i.number }} </div><div class="col-md-4 module_list{{ it }} module_btn{{ it }}" onclick="checkWork(\'{{ i.id }}\')">Check </div> </div>{% endfor %} </div>'
+        $("#show_box").html(str)
+        $("#taskInfo").css('display','none')
+        $("#modify").css('display','none')
+        $("#studentsBox").css('display','block')
+        $("#show_box").css('display','block')
+    })
+    $("#createTask").click(function () {
+        $("#taskInfo").css('display','none')
+        $("#modify").css('display','block')
+        $("#studentsBox").css('display','none')
+        $("#show_box").css('display','none')
+    })
+    $("#importStudents").click(function () {
+        $("#studentsfile").click()
+        $("#studentsfile").on('change',function (){
+            if ($(this).val() != ""){
+                let arr=$(this).val().split( '\\' );
+                let fileName=arr[arr.length-1];
+                let fileType=fileName.split('.')[fileName.split('.').length-1]
+                if (fileType!="xls"){
+                    alert('Only accept files in the following formats:\n.csv .xls .xlsx')
+                    $(this).val(null)
+                    return
+                }
+                else{
+                $("#formsub").submit()
+            }
+            }
+        })
+    })
+    $(function () {
+        $("#formsub").ajaxForm(function (data) {
+                if (data['code']!=0){
+                    alert(data['msg'])
+                }
+                else{
+                    alert(data['msg'])
+                    location.reload();
+                }
+            }
+        );
+    });
+    function checkInfo(id) {
+        location.href = "/taskInfo/" + id + "/"
+    }
+    function checkUser(email) {
+        location.href = "/ps/" + email + "/"
+    }
+    $("#delete").click(
+	function (){
+		var r = confirm("Are you sure you want to delete this task?")
+		if (r == true) {
+		    $.ajax({
+                url:'/deleteTask/',
+                type:'post',
+                dataType:'json',
+                data:{
+                    "id":'{{ task.id }}',
+                },
+                success:function(data) {
+                    alert(data['msg'])
+                    if (data['code']==0)
+                        location.href = "/task/"
+                }
+            })
+		}
+    })
+
+</script>
 
 </section>                             </div>
-
 
                     </div>
               </div>
         </div><!-- END .page-wrapper -->
-
 </div>
 
 
@@ -196,7 +448,8 @@
 
 
 </div><!-- #page -->
-    <footer id="footer" class="footer"  style="max-height: 200px;padding-top: 0px">
+
+    	<footer id="footer" class="footer"  style="max-height: 200px;padding-top: 0px">
 	<div class="wf-wrap">
 		<div class="wf-container qfe_row footer1" bitDataAction='site_widget_container' bitdatamarker="sidebar_2" >
 			<section id="simplepage-2"  style="margin-bottom:0px;" class="widget simplepage site_tooler"><style class='style_simplepage-2'>#simplepage-2 .widget-title{padding:0 0 0 10px;height:28px;line-height:28px;background-color:transparent;margin:0px;font-family:;font-size:px;font-weight:normal;font-style:normal;text-decoration:none;color:#ffffff;border-top:1px solid transparent;border-left:1px solid transparent;border-right:1px solid transparent;border-bottom:0px solid transparent;background-image:none;-webkit-border-top-left-radius: 4px;-webkit-border-top-right-radius: 4px;-moz-border-radius-topleft: 4px;-moz-border-radius-topright: 4px;border-top-left-radius: 4px;border-top-right-radius: 4px;} #simplepage-2 .widget-title{border-top:0;border-left:0;border-right:0;} #simplepage-2 .bitWidgetFrame{border-bottom:0;border-top:0;border-left:0;border-right:0;padding:4px 10px 4px 10px;}#simplepage-2{-webkit-box-shadow:none;box-shadow:none;}#simplepage-2 .bitWidgetFrame{background-color:transparent;background-image:none;-webkit-border-bottom-left-radius: 4px;border-bottom-left-radius: 4px;-webkit-border-bottom-right-radius: 4px;border-bottom-right-radius: 4px;}#simplepage-2 .bitWidgetFrame{padding-left:0px;padding-right:0px;}body #simplepage-2 .bitWidgetFrame{padding-top:0px !important;padding-bottom:0px !important;}</style><div class='simplepage_container bitWidgetFrame' data-post_id='7868' ><section  data-fixheight="" class="qfy-row-5-61569c3bb805f210303 section     no  section-text-no-shadow section-inner-no-shadow section-normal section-orgi"  id="bit_mk2rm"  style='margin-bottom:0;border-radius:0px;color:#d6d6d6;' >
@@ -241,7 +494,6 @@
 
 <!--  ************end************* -->
 </footer>
-
 </body>
 
 </html>
