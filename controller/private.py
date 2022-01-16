@@ -2,17 +2,35 @@ import os
 
 import xlrd
 from flask import url_for, redirect, send_from_directory, Blueprint, render_template, session, request, jsonify
+from flask_socketio import emit, join_room, leave_room
 
-from app import models, app, organizationName, organizationInfo, organizationEmail
+from app import models, app, organizationName, organizationInfo, organizationEmail, socketio
+from entity.File import Record
 from entity.Group import Group
 from entity.GroupMember import GroupMember as GM
 from entity.Module import Module
+from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir
+from tool.tool import randomGroup, mkdir, get_files
 
 private = Blueprint("private", __name__)
+
+
+def getAllContent(root):
+    if root is None:
+        return None
+    paths = [root.name]
+    for i in root.getChild():
+        paths.append(i.name)
+    recordset = Record.getRecordByPath(root.id)
+    records = []
+    if recordset is None:
+        return paths, records
+    for i in recordset:
+        records.append(i.name.split("-", 1)[1])
+    return paths, records
 
 
 @private.before_request
@@ -354,3 +372,111 @@ def taskInfo(id, page):
     return render_template("taskInfo_teacher.html", task=task, module=modu, role=0, group=thisGroup,
                            members=groupMembers, num_groups=num_groups, email=session['email'],
                            Oname=organizationName, Oinfo=organizationInfo, Oemail=organizationEmail)
+
+
+@private.route('/workspace/<id>/')
+def workSpace(id):
+    group = Group.get(id)
+    members = GM.getAllByGroup(id)
+    user = User.get(session['id'])
+    task = Task.get(group.TID)
+    mod = Module.getById(task.MID)
+    editable = False
+    pathname = "T" + str(task.id) + "G" + str(group.id)
+    mkdir(pathname)
+    path = Path.getPathByName(pathname, id)
+    if path is None:
+        path = Path(id, pathname, root=True)
+        path.put()
+    root = path.name
+    paths, records = getAllContent(path)
+    if user in members:
+        editable = True
+        # 小组用户登录
+    else:
+        # 非小组用户
+        pass
+    return render_template('workSpace.html', members=members, user=user, task=task, module=mod, editable=editable,
+                           group=group, paths=paths, root=root, files=records)
+
+
+@private.route("/rightpath/", methods=['post'])
+def rightpath():
+    name = request.form.get("path")
+    gid = request.form.get("gid")
+    path = Path.getPathByName(name, gid)
+    paths, records = getAllContent(path)
+    return jsonify({"code": 0, "paths": paths, "files": records})
+
+
+@private.route("/leftpath/", methods=['post'])
+def leftpath():
+    pathname = request.form.get("path")
+    gid = request.form.get("gid")
+    path = Path.getPathByName(pathname, gid)
+    if path.lastid is None:
+        return jsonify({"code": -1, "msg": "已经是根目录"})
+    root = Path.get(path.lastid)
+    paths, records = getAllContent(root)
+    return jsonify({"code": 0, "paths": paths, "files": records})
+
+
+@private.route("/newpath/", methods=['POST'])
+def newpath():
+    rootname = request.form.get("root")
+    pathname = request.form.get("path")
+    gid = request.form.get('gid')
+    type = request.form.get('type')
+    if type == 'folder':
+        root = Path.getPathByName(rootname, gid)
+        if root is None:
+            return jsonify({"code": -1, "msg": "no root"})
+        path = Path.getPathByName(pathname, session['email'])
+        if path is None:
+            path = Path(gid, pathname, lastid=root.id)
+            path.put()
+            paths, records = getAllContent(root)
+            return jsonify({"code": 0, "paths": paths, "files": records})
+        else:
+            return jsonify({"code": -1, "msg": "existing"})
+    else:
+        return jsonify({"code": 0, "msg": "file"})
+
+
+@socketio.on('disconnect', namespace='/socketio/')
+def io_disconnect():
+    emit('chat-resp', {'msg': session['name'] + " left the room !", 'name': 'System'}, room=session['room'])
+    session['room'] = None
+
+
+@socketio.on('speak', namespace='/socketio/')
+def channel(data):
+    emit('chat-resp', {'msg': data['msg'], 'name': data['name']}, room=session['room'])
+
+
+@socketio.on('join', namespace='/socketio/')
+def on_join(data):
+    name = data['name']
+    room = data['room']
+    join_room(room)
+    session['room'] = room
+    emit('chat-resp', {'msg': name + ' enter the room !', 'name': 'System'}, room=room)
+
+
+@socketio.on('new', namespace='/socketio/')
+def newFile(data):
+    name = data['name']
+    type = data['type']
+    root = data['root']
+    print(root)
+    path = app.root_path
+    for i in root:
+        path = os.path.join(path, i)
+    path = os.path.join(path, name)
+    print(path)
+    if type == 'file':
+        open(path, 'w')
+    else:
+        mkdir(path)
+    paths = [root[0], get_files(root[0])]
+    emit('file-resp', {'paths': paths}, room=session['room'])

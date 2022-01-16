@@ -1,6 +1,4 @@
-
-
-from app import models, app
+from app import models
 
 
 class Contact(models.Model):

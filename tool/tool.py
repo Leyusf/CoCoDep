@@ -41,6 +41,18 @@ def mkdir(path):
         os.makedirs(path)  # makedirs 创建文件时如果路径不存在会创建这个路径
 
 
+def get_files(root):
+    paths = []
+    for path in os.listdir(root):
+        if os.path.isfile(os.path.join(root, path)):
+            paths.append({'path': path, 'empty': True, 'type': 'file'})
+        elif os.listdir(os.path.join(root, path)) is not None:
+            paths.append({'path': path, 'empty': True, 'type': 'path'})
+        else:
+            paths.append({'path': path, 'empty': False, 'type': 'path'})
+    return paths
+
+
 def randomGroup(groupList, memberList, totalList):
     '''
     :param groupList: 3,2
@@ -60,3 +72,9 @@ def randomGroup(groupList, memberList, totalList):
             header += num_member
             res.append(group)
     return res
+
+
+def get_FileSize(filePath):
+    fsize = os.path.getsize(filePath)
+    fsize = fsize / float(1024)
+    return round(fsize, 0)

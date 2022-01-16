@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+    <html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CoCoDep - workspace</title>
+        <style>
+            div{
+                border: 1px red solid;
+            }
+        </style>
+        <link rel="stylesheet" href="/static/css/workspace.css">
+        <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+        <script src="/static/js/jquery-1.7.2.js"></script>
+        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/static/js/workspace.js"></script>
+        <link href="https://at.alicdn.com/t/font_1551254_rxrrzgz2kjc.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+    <div style="display: none" id="info" name="{{user.name}}" room="{{group.id}}" root="{{ paths[0] }}"></div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">New/Add</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Type: </label><br>
+                    <label><input name="Type" type="radio" value="file" />File</label>
+                    <label><input name="Type" type="radio" value="folder" />Folder</label>
+                    <br><label>Name: </label><br>
+                    <input name="name" type="text" id="create_name" placeholder="name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Cancel</button>
+                <button type="button" id="new_btn" class="btn btn-primary" data-dismiss="modal">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="contextmenu" id="context">
+        <div>
+            <li><a href="javascript:createFF();">New</a></li>
+            <li><a href="javascript:deleteFile();">Delete</a> </li>
+            <li><a href="javascript:copyFile();">Copy</a> </li>
+            <li><a href="javascript:rename();">Rename</a> </li>
+            <li><a href="javascript:rename();" id="paste" style="display: none">Paste</a> </li>
+        </div>
+    </div>
+
+    <div class="container" style="width: 100%">
+        <div class="row">
+            <div class="col-md-2" style="padding: 0px;">
+                <div oncontextmenu="showMenu(event)">
+                    <div class="fileItem" id="last" style="display: none">Last</div>
+                    <div class="fileItem" id="root">{{ root }}</div>
+                    <div id="child">
+                        {% for i in paths %}
+                        <div class="fileItem" style="padding-left: 15px" type="folder" id="folder">
+                            {{ i.name }}
+                        </div>
+                        {% endfor %}
+                        {% for i in records %}
+                        <div class="fileItem" style="padding-left: 15px" type="file" id="file">
+                            {{ i.name }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">123</div>
+            <div class="col-md-2">123</div>
+        </div>
+
+    </div>
+    </body>
+    </html>

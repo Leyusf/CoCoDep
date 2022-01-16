@@ -1,0 +1,33 @@
+.contextmenu {
+    width: 150px;
+    border: 1px solid #999;
+    box-shadow: 3px 3px 3px #ccc;
+    background-color: #fff;
+    position: absolute;
+    display: none;
+    z-index:9999999;
+}
+.contextmenu li {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    list-style: none;
+    width: 100%;
+}
+.contextmenu li a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+}
+.contextmenu li a:hover {
+    background-color: #ccc;
+    font-weight: bold;
+    color: #fff;
+
+}
+.name_box{
+    display: none;
+    width: 200px;
+    height: 100px;
+    z-index:9999999;
+}

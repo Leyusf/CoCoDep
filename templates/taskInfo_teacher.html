@@ -24,7 +24,7 @@
     <meta name="HandheldFriendly" content="true"/><!-- for baidu -->
     <!-- start of customer header -->
 	    <!-- end of customer header -->
-	<meta http-equiv="X-UA-Compati  、ble" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta charset="UTF-8" />
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -275,7 +275,7 @@
                     <div class="row" style="margin-top: 10px;">
                         <div class="col-md-1"></div>
                         <div class="col-md-2">
-                            <button class="open_btn">WorkSpace</button>
+                            <button class="open_btn" onclick="checkWork({{ group.id }})">WorkSpace</button>
                         </div>
                     </div>
                     <div class="row" style="margin-top: 10px;">
@@ -408,6 +408,9 @@
     }
     function checkUser(email) {
         location.href = "/ps/" + email + "/"
+    }
+    function checkWork(gid){
+        location.href = "/workspace/" + gid + "/"
     }
     $("#delete").click(
 	function (){

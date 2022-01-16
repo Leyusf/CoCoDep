@@ -3,6 +3,8 @@ from datetime import timedelta
 from flask import Flask
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO
+from flask_cors import CORS
 
 app = Flask(__name__)
 mail = Mail()
@@ -24,6 +26,7 @@ mail.init_app(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:991123@localhost:3306/CoCoDep?charset=utf8'
 models = SQLAlchemy(app)
+socketio = SocketIO(app)
 
 from entity.User import User
 from entity.Module import Module
@@ -32,6 +35,8 @@ from entity.Task import Task
 from entity.ModuleStudent import MSTable
 from entity.Group import Group
 from entity.GroupMember import GroupMember
+from entity.Path import Path
+from entity.File import Record
 
 # models.drop_all()
 # models.create_all()
@@ -53,7 +58,8 @@ def services():
 
 @app.route('/introduction/')
 def introduction():
-    return render_template('introduction.html', Oname=organizationName, Oinfo=organizationInfo, Oemail=organizationEmail)
+    return render_template('introduction.html', Oname=organizationName, Oinfo=organizationInfo,
+                           Oemail=organizationEmail)
 
 
 @app.route('/launch/')
@@ -113,6 +119,9 @@ def addStudent():
     return jsonify({'code': 0, 'msg': 'successfully'})
 
 
+
+
+
 # 注册蓝图
 from controller.access import *
 from controller.private import *
@@ -121,4 +130,6 @@ app.register_blueprint(access)
 app.register_blueprint(private)
 
 if __name__ == '__main__':
-    app.run(use_reloader=False)
+    # app.run(use_reloader=False)
+    CORS(app, supports_credentials=True)  # 设置跨域
+    socketio.run(app)
