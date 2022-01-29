@@ -130,6 +130,6 @@ app.register_blueprint(access)
 app.register_blueprint(private)
 
 if __name__ == '__main__':
-    # app.run(use_reloader=False)
+    app.run(use_reloader=False)
     CORS(app, supports_credentials=True)  # 设置跨域
-    socketio.run(app)
+    # socketio.run(app)

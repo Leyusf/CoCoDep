@@ -13,7 +13,7 @@ from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir, get_files
+from tool.tool import randomGroup, mkdir, get_files, isExisted
 
 private = Blueprint("private", __name__)
 
@@ -22,7 +22,7 @@ def getAllContent(root):
     if root is None:
         return None
     paths = [root.name]
-    for i in root.getChild():
+    for i in root.getChildren():
         paths.append(i.name)
     recordset = Record.getRecordByPath(root.id)
     records = []
@@ -33,10 +33,10 @@ def getAllContent(root):
     return paths, records
 
 
-@private.before_request
-def before():
-    if not session.get('login'):
-        return 'Please log in'
+# @private.before_request
+# def before():
+#     if not session.get('login'):
+#         return 'Please log in'
 
 
 @private.route('/modify/')
@@ -400,83 +400,58 @@ def workSpace(id):
                            group=group, paths=paths, root=root, files=records)
 
 
-@private.route("/rightpath/", methods=['post'])
-def rightpath():
-    name = request.form.get("path")
-    gid = request.form.get("gid")
-    path = Path.getPathByName(name, gid)
-    paths, records = getAllContent(path)
-    return jsonify({"code": 0, "paths": paths, "files": records})
-
-
-@private.route("/leftpath/", methods=['post'])
-def leftpath():
-    pathname = request.form.get("path")
-    gid = request.form.get("gid")
-    path = Path.getPathByName(pathname, gid)
-    if path.lastid is None:
-        return jsonify({"code": -1, "msg": "已经是根目录"})
-    root = Path.get(path.lastid)
-    paths, records = getAllContent(root)
-    return jsonify({"code": 0, "paths": paths, "files": records})
-
-
-@private.route("/newpath/", methods=['POST'])
-def newpath():
-    rootname = request.form.get("root")
-    pathname = request.form.get("path")
+@private.route("/newPath/", methods=['POST'])
+def newPath():
+    rid = request.form.get('rid')
     gid = request.form.get('gid')
-    type = request.form.get('type')
-    if type == 'folder':
-        root = Path.getPathByName(rootname, gid)
-        if root is None:
-            return jsonify({"code": -1, "msg": "no root"})
-        path = Path.getPathByName(pathname, session['email'])
-        if path is None:
-            path = Path(gid, pathname, lastid=root.id)
-            path.put()
-            paths, records = getAllContent(root)
-            return jsonify({"code": 0, "paths": paths, "files": records})
-        else:
-            return jsonify({"code": -1, "msg": "existing"})
-    else:
-        return jsonify({"code": 0, "msg": "file"})
+    root = Path.get(rid)
+    pathName = request.form.get('name')
+    if root is None:
+        return jsonify({'code': -1})
+    paths = root.getTotalPath()
+    realPath = app.root_path
+    for i in paths:
+        realPath = os.path.join(realPath, i)
+    if isExisted(pathName, realPath):
+        return jsonify({'code': -1})
+    path = Path(gid, pathName, lastid=rid)
+    path.put()
+    realPath = os.path.join(realPath, path.name)
+    mkdir(realPath)
+    return jsonify({'code': 0})
 
 
-@socketio.on('disconnect', namespace='/socketio/')
-def io_disconnect():
-    emit('chat-resp', {'msg': session['name'] + " left the room !", 'name': 'System'}, room=session['room'])
-    session['room'] = None
+@private.route("/newFile/", methods=['POST'])
+def newFile():
+    rid = request.form.get('rid')
+    file = request.files.get('file')
+    root = Path.get(rid)
+    if root is None:
+        return jsonify({'code': -1})
+    realPath = app.root_path
+    paths = root.getTotalPath()
+    for i in paths:
+        realPath = os.path.join(realPath, i)
+    if isExisted(file.filename, realPath):
+        return jsonify({'code': -1})
+    realPath = os.path.join(realPath, file.filename)
+    record = Record(file.filename, realPath, rid)
+    record.put()
+    file.save(realPath)
+    return jsonify({'code': 0})
 
 
-@socketio.on('speak', namespace='/socketio/')
-def channel(data):
-    emit('chat-resp', {'msg': data['msg'], 'name': data['name']}, room=session['room'])
-
-
-@socketio.on('join', namespace='/socketio/')
-def on_join(data):
-    name = data['name']
-    room = data['room']
-    join_room(room)
-    session['room'] = room
-    emit('chat-resp', {'msg': name + ' enter the room !', 'name': 'System'}, room=room)
-
-
-@socketio.on('new', namespace='/socketio/')
-def newFile(data):
-    name = data['name']
-    type = data['type']
-    root = data['root']
-    print(root)
-    path = app.root_path
-    for i in root:
-        path = os.path.join(path, i)
-    path = os.path.join(path, name)
-    print(path)
-    if type == 'file':
-        open(path, 'w')
-    else:
-        mkdir(path)
-    paths = [root[0], get_files(root[0])]
-    emit('file-resp', {'paths': paths}, room=session['room'])
+@private.route('/checkChildrenPaths/', methods=['POST'])
+def checkChildrenPaths():
+    id = request.form.get('id')
+    path = Path.get(id)
+    paths = path.getChildren()
+    files = Record.getRecordByPath(id)
+    results = []
+    for i in paths:
+        tmp = {'id': i.id, 'name': i.name, 'type': 'path'}
+        results.append(tmp)
+    for i in files:
+        tmp = {'id': i.id, 'name': i.name, 'type': 'file'}
+        results.append(tmp)
+    return jsonify({'paths': results})

@@ -11,13 +11,11 @@ class Record(models.Model):
     id = models.Column(models.Integer(), primary_key=True, autoincrement=True)
     datetime = models.Column(models.DATETIME(), nullable=False)
     pathid = models.Column(models.Integer(), nullable=False)
-    size = models.Column(models.Integer(), nullable=False)
     name = models.Column(models.String(200), nullable=False)
     realpath = models.Column(models.String(255), nullable=False)
 
-    def __init__(self, name, realpath, pathid, size):
+    def __init__(self, name, realpath, pathid):
         self.pathid = pathid
-        self.size = size
         self.datetime = datetime.now()
         self.name = name
         self.realpath = realpath
@@ -44,7 +42,5 @@ class Record(models.Model):
     def dele(self):
         path = os.path.join(self.realpath, self.name)
         os.remove(path)
-        user = User.get(self.email)
-        user.restcapacity += self.size
         Record.query.filter(Record.id == self.id).delete()
         models.session.commit()

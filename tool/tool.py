@@ -78,3 +78,9 @@ def get_FileSize(filePath):
     fsize = os.path.getsize(filePath)
     fsize = fsize / float(1024)
     return round(fsize, 0)
+
+
+def isExisted(name, path):
+    if name in os.listdir(path):
+        return True
+    return False

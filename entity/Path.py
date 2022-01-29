@@ -5,20 +5,20 @@ from entity.File import Record
 
 
 class Path(models.Model):
-    __tablename__ = 'path'  # 表名
+    __tablename__ = 'path'
     id = models.Column(models.Integer(), primary_key=True, autoincrement=True)
     lastid = models.Column(models.Integer())
-    gid = models.Column(models.Integer())
     root = models.Column(models.Boolean(), nullable=False)
+    gid = models.Column(models.Integer())
     name = models.Column(models.String(30), nullable=False)
-    empty = models.Column(models.Integer(), default=0)
+    number = models.Column(models.Integer(), default=0)
 
     def __init__(self, gid, name, lastid=None, root=False):
         self.lastid = lastid
         self.gid = gid
         self.root = root
         self.name = str(name)
-        self.empty = 0
+        self.number = 0
 
     def get(id):
         try:
@@ -26,30 +26,34 @@ class Path(models.Model):
         except:
             return None
 
-    def getPathByName(name, gid):
-        path = Path.query.filter(and_(Path.name == name, Path.gid == gid)).first()
-        return path
+    def getRoot(self):
+        return Path.get(self.lastid)
 
-    def getRoot(self, gid):
-        return Path.query.filter(Path.gid == gid, Path.root == True).first()
+    def getTotalPath(self):
+        paths = [self.name]
+        tmp = self.getRoot()
+        while tmp is not None:
+            paths.append(tmp.name)
+            tmp = tmp.getRoot()
+        return reversed(paths)
 
-    def getChild(self):
+    def getChildren(self):
         return Path.query.filter(Path.lastid == self.id).all()
 
     def put(self):
         models.session.add(self)
         path = Path.get(self.lastid)
         if path is not None:
-            path.empty += 1
+            path.number += 1
         return True
 
     def dele(self):
         ## 只删除当前文件夹下文件
-        if self.empty != 0:
+        if self.number != 0:
             records = Record.getRecordByPath(self.id)
             for i in records:
                 i.dele()
-                self.empty -= 1
+                self.number -= 1
 
     def deleAll(id):
         root = Path.get(id)
