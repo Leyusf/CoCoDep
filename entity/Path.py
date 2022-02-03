@@ -1,3 +1,5 @@
+import os
+
 from app import models
 from sqlalchemy import and_
 
@@ -12,13 +14,15 @@ class Path(models.Model):
     gid = models.Column(models.Integer())
     name = models.Column(models.String(30), nullable=False)
     number = models.Column(models.Integer(), default=0)
+    realpath = models.Column(models.String(255), nullable=False)
 
-    def __init__(self, gid, name, lastid=None, root=False):
+    def __init__(self, gid, name, realpath, lastid=None, root=False):
         self.lastid = lastid
         self.gid = gid
         self.root = root
         self.name = str(name)
         self.number = 0
+        self.realpath = realpath
 
     def get(id):
         try:
@@ -51,13 +55,17 @@ class Path(models.Model):
         ## 只删除当前文件夹下文件
         if self.number != 0:
             records = Record.getRecordByPath(self.id)
+            print('Record:')
+            print(records)
             for i in records:
                 i.dele()
                 self.number -= 1
+        os.rmdir(self.realpath)
 
     def deleAll(id):
         root = Path.get(id)
-        for i in root.getChild():
+        print(root)
+        for i in root.getChildren():
             Path.deleAll(i.id)
         root.dele()
         if not root.root:

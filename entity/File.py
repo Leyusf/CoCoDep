@@ -40,7 +40,6 @@ class Record(models.Model):
         return True
 
     def dele(self):
-        path = os.path.join(self.realpath, self.name)
-        os.remove(path)
+        os.remove(self.realpath)
         Record.query.filter(Record.id == self.id).delete()
         models.session.commit()

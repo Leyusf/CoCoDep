@@ -384,18 +384,14 @@ def workSpace(id):
     editable = False
     pathname = "T" + str(task.id) + "G" + str(group.id)
     mkdir(pathname)
-    path = Path.getPathByName(pathname, id)
-    if path is None:
-        path = Path(id, pathname, root=True)
-        path.put()
+    realPath = os.path.join(app.root_path,pathname)
+    path = Path(id, pathname, realPath, root=True)
+    path.put()
     root = path.name
     paths, records = getAllContent(path)
     if user in members:
-        editable = True
         # 小组用户登录
-    else:
-        # 非小组用户
-        pass
+        editable = True
     return render_template('workSpace.html', members=members, user=user, task=task, module=mod, editable=editable,
                            group=group, paths=paths, root=root, files=records)
 
@@ -414,10 +410,10 @@ def newPath():
         realPath = os.path.join(realPath, i)
     if isExisted(pathName, realPath):
         return jsonify({'code': -1})
-    path = Path(gid, pathName, lastid=rid)
-    path.put()
-    realPath = os.path.join(realPath, path.name)
+    realPath = os.path.join(realPath, pathName)
     mkdir(realPath)
+    path = Path(gid, pathName, realPath, lastid=rid)
+    path.put()
     return jsonify({'code': 0})
 
 
@@ -438,6 +434,7 @@ def newFile():
     record = Record(file.filename, realPath, rid)
     record.put()
     file.save(realPath)
+    root.number += 1
     return jsonify({'code': 0})
 
 
@@ -455,3 +452,23 @@ def checkChildrenPaths():
         tmp = {'id': i.id, 'name': i.name, 'type': 'file'}
         results.append(tmp)
     return jsonify({'paths': results})
+
+
+@private.route('/deleteFile/', methods=['POST'])
+def deleteFile():
+    id = request.form.get('id')
+    file = Record.get(id)
+    if file is None:
+        return jsonify({'code': -1})
+    file.dele()
+    return jsonify({'code': 0})
+
+
+@private.route('/deletePath/', methods=['POST'])
+def deletePath():
+    id = request.form.get('id')
+    path = Path.get(id)
+    if path is None:
+        return jsonify({'code': -1})
+    Path.deleAll(id)
+    return jsonify({'code': 0})

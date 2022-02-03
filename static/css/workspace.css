@@ -7,6 +7,9 @@
     display: none;
     z-index:9999999;
 }
+textarea{
+    resize: none;
+}
 .contextmenu li {
     text-align: center;
     height: 40px;
@@ -25,9 +28,128 @@
     color: #fff;
 
 }
-.name_box{
-    display: none;
-    width: 200px;
-    height: 100px;
-    z-index:9999999;
+.root_box{
+    border: solid 2px blueviolet;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
+.direct_box{
+    border: solid 2px blueviolet;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.root{
+    margin: 5px;
+    font-size: 20px;
+    padding-left: 20px;
+}
+.child{
+    margin: 5px;
+    font-size: 15px;
+    padding-left: 20px;
+}
+.child_box{
+    height:600px;
+    padding-right: 10px;
+    overflow:auto
+}
+.child_box::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+}
+.child_box::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+}
+.child_box::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: #EDEDED;
+}
+.last{
+    border-right: solid 2px blueviolet;
+    float: left;
+    width: 40%;
+    overflow: hidden;
+}
+.last:hover{
+    background: #a355ec;
+}
+.last:hover p{
+    color: white;
+}
+.current{
+    padding-left: 10px;
+    overflow: hidden;
+}
+.edit_board{
+    width:100%;
+    border-radius: 2px;
+    height: 100%;
+    background: #464646;
+    color: white;font-size: 20px;
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+}
+.edit_board::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+}
+.edit_board::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+}
+.edit_board::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: #EDEDED;
+}
+.chat_board{
+    height:100%;
+    background: #362c65;
+    border-radius: 5px;
+}
+.chat_board::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+}
+.chat_board::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+}
+.chat_board::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: #EDEDED;
+}
+.input_area{
+    height:100%;
+    width: 100%;
+    background: #362c65;
+    border-radius: 5px;
+}
+.input_area::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+}
+.input_area::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+}
+.input_area::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: #EDEDED;
+}
+.btn{
+    border-radius:3px;
+    height: 40px;
+    width: 90px;
+}
+.btn:hover{
+    outline: 1px;
 }
