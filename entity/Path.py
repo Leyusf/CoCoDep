@@ -30,6 +30,9 @@ class Path(models.Model):
         except:
             return None
 
+    def getByName(name):
+        return Path.query.filter(Path.name == name).first()
+
     def getRoot(self):
         return Path.get(self.lastid)
 

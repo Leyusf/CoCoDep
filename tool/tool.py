@@ -4,6 +4,8 @@ from flask import session
 import time
 import os
 
+from entity.File import Record
+
 
 def validate(code):
     if session['captcha'] is None:
@@ -74,13 +76,20 @@ def randomGroup(groupList, memberList, totalList):
     return res
 
 
-def get_FileSize(filePath):
-    fsize = os.path.getsize(filePath)
-    fsize = fsize / float(1024)
-    return round(fsize, 0)
-
-
 def isExisted(name, path):
     if name in os.listdir(path):
         return True
     return False
+
+
+def getAllChildren(path):
+    paths = path.getChildren()
+    files = Record.getRecordByPath(path.id)
+    results = []
+    for i in paths:
+        tmp = {'id': i.id, 'name': i.name, 'type': 'path'}
+        results.append(tmp)
+    for i in files:
+        tmp = {'id': i.id, 'name': i.name, 'type': 'file'}
+        results.append(tmp)
+    return results

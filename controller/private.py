@@ -2,7 +2,7 @@ import os
 
 import xlrd
 from flask import url_for, redirect, send_from_directory, Blueprint, render_template, session, request, jsonify
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room, leave_room, rooms
 
 from app import models, app, organizationName, organizationInfo, organizationEmail, socketio
 from entity.File import Record
@@ -13,24 +13,9 @@ from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir, get_files, isExisted
+from tool.tool import randomGroup, mkdir, get_files, isExisted, getAllChildren
 
 private = Blueprint("private", __name__)
-
-
-def getAllContent(root):
-    if root is None:
-        return None
-    paths = [root.name]
-    for i in root.getChildren():
-        paths.append(i.name)
-    recordset = Record.getRecordByPath(root.id)
-    records = []
-    if recordset is None:
-        return paths, records
-    for i in recordset:
-        records.append(i.name.split("-", 1)[1])
-    return paths, records
 
 
 # @private.before_request
@@ -377,23 +362,23 @@ def taskInfo(id, page):
 @private.route('/workspace/<id>/')
 def workSpace(id):
     group = Group.get(id)
-    members = GM.getAllByGroup(id)
-    user = User.get(session['id'])
     task = Task.get(group.TID)
-    mod = Module.getById(task.MID)
-    editable = False
+    user = User.get(session['id'])
     pathname = "T" + str(task.id) + "G" + str(group.id)
     mkdir(pathname)
-    realPath = os.path.join(app.root_path,pathname)
-    path = Path(id, pathname, realPath, root=True)
-    path.put()
-    root = path.name
-    paths, records = getAllContent(path)
-    if user in members:
-        # 小组用户登录
-        editable = True
-    return render_template('workSpace.html', members=members, user=user, task=task, module=mod, editable=editable,
-                           group=group, paths=paths, root=root, files=records)
+    realPath = os.path.join(app.root_path, pathname)
+    path = Path.getByName(pathname)
+    if path is None:
+        path = Path(id, pathname, realPath, root=True)
+        path.put()
+    groupMemberEmail = [i.email for i in GM.getAllByGroup(id)]
+    groupMember = []
+    results = getAllChildren(path)
+    for i in groupMemberEmail:
+        if i != session['email']:
+            groupMember.append(User.get(i).name)
+    return render_template('workSpace.html', taskName=task.name, gid=id, user=user, members=groupMember, root=path,
+                           content=results)
 
 
 @private.route("/newPath/", methods=['POST'])
@@ -442,15 +427,7 @@ def newFile():
 def checkChildrenPaths():
     id = request.form.get('id')
     path = Path.get(id)
-    paths = path.getChildren()
-    files = Record.getRecordByPath(id)
-    results = []
-    for i in paths:
-        tmp = {'id': i.id, 'name': i.name, 'type': 'path'}
-        results.append(tmp)
-    for i in files:
-        tmp = {'id': i.id, 'name': i.name, 'type': 'file'}
-        results.append(tmp)
+    results = getAllChildren(path)
     return jsonify({'paths': results})
 
 
@@ -472,3 +449,35 @@ def deletePath():
         return jsonify({'code': -1})
     Path.deleAll(id)
     return jsonify({'code': 0})
+
+
+@private.route('/goTo/', methods=['POST'])
+def goTo():
+    rid = request.form.get('rid')
+    path = Path.get(rid)
+    lastid = 0
+    if path.lastid is not None:
+        lastid = path.lastid
+    root = {'id': path.id, 'name': path.name, 'type': 'path'}
+    return jsonify({'root': root, 'lastID': lastid})
+
+
+@socketio.on('join', namespace='/socket')
+def on_join(data):
+    room = data['gid']
+    session['room'] = room
+    join_room(room)
+    emit('sysMsg', {'data': session['name'] + ' joins the room.'}, room=room)
+
+
+@socketio.on('disconnect', namespace='/socket')
+def on_disconnect():
+    room = session['room']
+    leave_room(room)
+    emit('sysMsg', {'data': session['name'] + ' leaves the room.'}, room=room)
+
+
+@socketio.on('send', namespace='/socket')
+def on_send(data):
+    room = session['room']
+    emit('receive', {'msg': data['msg'], 'uid': data['uid'], 'name': data['name']}, room=room)
