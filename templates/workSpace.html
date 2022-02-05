@@ -39,9 +39,9 @@
                 </div>
 
                 {% if content|length > 0 %}
-                <div class="child_box">
+                <div class="child_box" oncontextmenu="return false">
                     {% for i in content %}
-                        <div class="direct_box" onclick="next({{ i.id }},'{{ i.type }}')" ><p class="child">{{ i.name }}</p></div>
+                        <div class="direct_box" eleType="{{ i.type }}" eleId="{{ i.id }}" oncontextmenu="showChildrenMenu(this)" onclick="next({{ i.id }},'{{ i.type }}')" ><p class="child">{{ i.name }}</p></div>
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -84,5 +84,9 @@
 
 
     </div>
+    <ul class="contextmenu" id="menu">
+        <li><a id="childType" href="javascript:void(0);"></a></li>
+        <li><a id="del" href="javascript:void(0);">Delete</a></li>
+    </ul>
     </body>
     </html>

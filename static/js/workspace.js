@@ -1,6 +1,18 @@
 var websocket_url = 'http://' + document.domain + ':' + location.port + '/socket';
 var socket = io(websocket_url);
+var curElem;
+//获取可视区宽度
+var winWidth = function() {
+    return document.documentElement.clientWidth || document.body.clientWidth;
+}
+//获取可视区高度
+var winHeight = function() {
+    return document.documentElement.clientHeight || document.body.clientHeight;
+}
 $(document).ready(function(){
+    document.addEventListener('click', function() {
+        $("#menu").css("display","none")
+    })
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
     var uid = $("title").attr('uid')
@@ -27,6 +39,42 @@ $(document).ready(function(){
         var lastID = $(this).attr('lastid')
         if (lastID!='0'){
             goTo(lastID)
+        }
+    })
+    $("#del").click(function () {
+        var type = $(curElem).attr('eletype')
+        var id = $(curElem).attr('eleid')
+        if (type=="path"){
+            $.ajax({
+                    type:"POST",
+                    url:"/deletePath/",
+                    dataType:'json',
+                    data:{
+                        "id":id
+                },
+                success:function (data) {
+                    if (data['code']==0){
+                        var id = $(".current").attr('pid')
+                        goTo(id)
+                    }
+                }
+            })
+        }
+        else{
+            $.ajax({
+                    type:"POST",
+                    url:"/deleteFile/",
+                    dataType:'json',
+                    data:{
+                        "id":id
+                },
+                success:function (data) {
+                    if (data['code']==0){
+                        var id = $(".current").attr('pid')
+                        goTo(id)
+                    }
+                }
+            })
         }
     })
 });
@@ -58,13 +106,15 @@ function goTo(id){
                     "id":id
                 },
                 success:function(data){
-                    var start = '<div class="direct_box" onclick="next('
-                    var mid2 = '\')"><p class="child">'
+                    var start = '<div class="direct_box" oncontextmenu="showChildrenMenu(this)" onclick="next('
+                    var mid1 = '\')" eleType="'
+                    var mid2 = '" eleId="'
+                    var mid3 = '"><p class="child">'
                     var end = '</p></div>'
                     $(".child_box").html("")
                     for (var i=0;i<data['paths'].length;i++){
-                        var str = start + data['paths'][i]['id'] + ",\'" + data['paths'][i]['type'] + mid2
-                            + data['paths'][i]['name'] + end
+                        var str = start + data['paths'][i]['id'] + ",\'" + data['paths'][i]['type'] + mid1 +
+                            data['paths'][i]['type'] + mid2 + data['paths'][i]['id'] + mid3 + data['paths'][i]['name'] + end
                         $(".child_box").append(str)
                     }
                 }
@@ -79,43 +129,28 @@ function time() {
     var s = date.getSeconds();//获取当前秒
     return h + " : " + m + " : " + s
 }
-function showMenu(env){
-	    	env.preventDefault();
-	        //env 表示event事件
-	        // 兼容event事件写法
-	        var e = env || window.event;
-
-	        // 获取菜单，让菜单显示出来
-	       var context = document.getElementById("context");
-	       context.style.display = "block";
-
-	       //  让菜单随着鼠标的移动而移动
-	       //  获取鼠标的坐标
-	       var x = e.clientX;
-	       var y = e.clientY;
-
-	       //  调整宽度和高度
-        if (x-150>=0){
-            context.style.left =x-150+"px" //Math.min(w-202,x)+"px";
-	        context.style.top = y+"px" //Math.min(h-230,y)+"px";
-        }
-        else{
-            context.style.left =x+"px" //Math.min(w-202,x)+"px";
-	        context.style.top = y+"px" //Math.min(h-230,y)+"px";
-        }
-
-
-	      // return false可以关闭系统默认菜单
-	       return false;
-	    };
-	  // 当鼠标点击后关闭右键菜单
-	  document.onclick = function(){
-		  closeMenu()
-
-	  };
-function closeMenu(){
-    var contextmenu = document.getElementById("context");
-    contextmenu.style.display = "none";
+function showChildrenMenu(obj){
+    var x = $(obj).offset().top;
+    var y = $(obj).offset().left;
+    var id = $(obj).attr("eleId")
+    var type = $(obj).attr("eleType")
+    if( x >= (winWidth() - menu.offsetWidth) ) {
+        x  = winWidth() - menu.offsetWidth;
+    } else {
+        x = x
+    }
+    if(y > winHeight() - menu.offsetHeight  ) {
+        y = winHeight() - menu.offsetHeight;
+    } else {
+        y = y;
+    }
+    curElem = obj
+    var element = $("#menu")
+    $("#childType").text(type.charAt(0).toUpperCase() + type.slice(1))
+    element.css("display","block")
+    element.css({'top': x + 'px','left':y + 'px'});
+    element.css("z-index","99")
+    return false;
 }
 function createFF(){
     $('#myModal').modal();
