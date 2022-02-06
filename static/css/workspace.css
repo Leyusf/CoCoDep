@@ -55,7 +55,6 @@ textarea{
     height:600px;
     padding-right: 10px;
     overflow:auto;
-    cursor: pointer
 }
 .child_box::-webkit-scrollbar {/*滚动条整体样式*/
         width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
@@ -87,6 +86,7 @@ textarea{
 .current{
     padding-left: 10px;
     overflow: hidden;
+    cursor: pointer;
 }
 .edit_board{
     width:100%;

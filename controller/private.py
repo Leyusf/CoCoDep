@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 import xlrd
 from flask import url_for, redirect, send_from_directory, Blueprint, render_template, session, request, jsonify
@@ -405,6 +406,28 @@ def newPath():
 @private.route("/newFile/", methods=['POST'])
 def newFile():
     rid = request.form.get('rid')
+    name = request.form.get('name')
+    root = Path.get(rid)
+    if root is None:
+        return jsonify({'code': -1})
+    realPath = app.root_path
+    paths = root.getTotalPath()
+    for i in paths:
+        realPath = os.path.join(realPath, i)
+    if isExisted(name, realPath):
+        return jsonify({'code': -1})
+    realPath = os.path.join(realPath, name)
+    record = Record(name, realPath, rid)
+    record.put()
+    print(realPath)
+    pathlib.Path(realPath).touch()
+    root.number += 1
+    return jsonify({'code': 0})
+
+
+@private.route("/addFile/", methods=['POST'])
+def addFile():
+    rid = request.form.get('rid')
     file = request.files.get('file')
     root = Path.get(rid)
     if root is None:
@@ -437,6 +460,8 @@ def deleteFile():
     file = Record.get(id)
     if file is None:
         return jsonify({'code': -1})
+    root = Path.get(file.pathid)
+    root.number -= 1
     file.dele()
     return jsonify({'code': 0})
 
@@ -447,6 +472,8 @@ def deletePath():
     path = Path.get(id)
     if path is None:
         return jsonify({'code': -1})
+    root = Path.get(path.lastid)
+    root.number -= 1
     Path.deleAll(id)
     return jsonify({'code': 0})
 

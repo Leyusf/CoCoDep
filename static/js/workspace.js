@@ -1,17 +1,12 @@
 var websocket_url = 'http://' + document.domain + ':' + location.port + '/socket';
 var socket = io(websocket_url);
 var curElem;
-//获取可视区宽度
-var winWidth = function() {
-    return document.documentElement.clientWidth || document.body.clientWidth;
-}
-//获取可视区高度
-var winHeight = function() {
-    return document.documentElement.clientHeight || document.body.clientHeight;
-}
 $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#menu").css("display","none")
+    })
+        document.addEventListener('click', function() {
+        $("#operation").css("display","none")
     })
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
@@ -35,6 +30,69 @@ $(document).ready(function(){
         }
         $(".input_area").val("")
     })
+    $("#newPath").click(function () {
+        var res = newPath()
+        if (res===false){
+            alert("Cannot create this folder.")
+        }
+        else{
+            var rid = $(curElem).attr('pid')
+            $.ajax({
+                type:"POST",
+                url:"/newPath/",
+                    dataType:'json',
+                    data:{
+                        "rid":rid,
+                        "gid":gid,
+                        "name":res
+                },
+                success:function (data) {
+                    if (data['code']==0){
+                        goTo(rid)
+                    }
+                    else{
+                        alert("Cannot create this folder.")
+                    }
+                }
+            })
+        }
+    })
+    $("#addFile").click(function () {
+        $("#save").click()
+        var rid = $(curElem).attr('pid')
+        $("#rid").val(rid)
+        $("#save").on('change',function (){
+            if ($(this).val() != ""){
+                $("#fileAdd").submit()
+            }
+        })
+    })
+    $("#newFile").click(function () {
+        var res = newFile()
+        if (res===false){
+            alert("Cannot create this file.")
+        }
+        else{
+            var rid = $(curElem).attr('pid')
+            $.ajax({
+                type:"POST",
+                url:"/newFile/",
+                    dataType:'json',
+                    data:{
+                        "rid":rid,
+                        "name":res
+                },
+                success:function (data) {
+                    if (data['code']==0){
+                        goTo(rid)
+                    }
+                    else{
+                        alert("Cannot create this file.")
+                    }
+                }
+            })
+        }
+    })
     $("#last").click(function () {
         var lastID = $(this).attr('lastid')
         if (lastID!='0'){
@@ -45,6 +103,10 @@ $(document).ready(function(){
         var type = $(curElem).attr('eletype')
         var id = $(curElem).attr('eleid')
         if (type=="path"){
+            if (deletePath()===false){
+                $("#menu").css("display","none")
+                return false
+            }
             $.ajax({
                     type:"POST",
                     url:"/deletePath/",
@@ -61,6 +123,10 @@ $(document).ready(function(){
             })
         }
         else{
+            if (deleteFile()===false){
+                $("#menu").css("display","none")
+                return false
+            }
             $.ajax({
                     type:"POST",
                     url:"/deleteFile/",
@@ -77,13 +143,18 @@ $(document).ready(function(){
             })
         }
     })
+    $("#edit").keypress(function () {
+        // 给socket发送同步信息
+    })
 });
 function next(id,type) {
     if (type=='path'){
         goTo(id)
+        $("#edit").val("")
+        $("#edit").attr('disabled',"disabled")
     }
     else {
-
+        $("#edit").removeAttr('disabled')
     }
 }
 function goTo(id){
@@ -130,28 +201,91 @@ function time() {
     return h + " : " + m + " : " + s
 }
 function showChildrenMenu(obj){
-    var x = $(obj).offset().top;
-    var y = $(obj).offset().left;
-    var id = $(obj).attr("eleId")
+    var evt = window.event || arguments[0];
+    /*获取当前鼠标右键按下后的位置，据此定义菜单显示的位置*/
+    var x = evt.clientX;
+    var y = evt.clientY;
     var type = $(obj).attr("eleType")
-    if( x >= (winWidth() - menu.offsetWidth) ) {
-        x  = winWidth() - menu.offsetWidth;
-    } else {
-        x = x
-    }
-    if(y > winHeight() - menu.offsetHeight  ) {
-        y = winHeight() - menu.offsetHeight;
-    } else {
-        y = y;
-    }
     curElem = obj
     var element = $("#menu")
     $("#childType").text(type.charAt(0).toUpperCase() + type.slice(1))
     element.css("display","block")
-    element.css({'top': x + 'px','left':y + 'px'});
+    element.css({'top': y + 'px','left':x + 'px'});
     element.css("z-index","99")
     return false;
 }
-function createFF(){
-    $('#myModal').modal();
+function showOperationMenu(obj){
+    var evt = window.event || arguments[0];
+    /*获取当前鼠标右键按下后的位置，据此定义菜单显示的位置*/
+    var x = evt.clientX;
+    var y = evt.clientY;
+    curElem = obj
+    var element = $("#operation")
+    element.css("display","block")
+    element.css({'top': y + 'px','left':x + 'px'});
+    element.css("z-index","99")
+    return false;
 }
+function deletePath(){    /* 绑定事件 */
+    var r = confirm("Do you want to delete this folder and all its contents?")
+    if (r == true) {
+        return true
+    }
+    return false
+}
+function deleteFile(){    /* 绑定事件 */
+    var r = confirm("Do you want to delete this file?")
+    if (r == true) {
+        return true
+    }
+    return false
+}
+function newPath(){
+    var t=prompt("Path name:")
+    if (t!=null && t!="") {
+        return t
+    }
+    return false
+}
+function newFile(){
+    var t=prompt("File name:")
+    if (t!=null && t!="") {
+        return t
+    }
+    return false
+}
+function tab(){
+  if (event.keyCode == 9)
+  {
+     $("#edit").insertAtCaret("\t");
+     event.returnValue = false;
+  }
+}
+// 可以在光标处插入文本
+(function ($) {
+    "use strict";
+    $.fn.extend({
+        insertAtCaret : function (myValue) {
+            var $t = $(this)[0];
+            if (document.selection) {
+                this.focus();
+                var sel = document.selection.createRange();
+                sel.text = myValue;
+                this.focus();
+            } else
+                if ($t.selectionStart || $t.selectionStart == '0') {
+                    var startPos = $t.selectionStart;
+                    var endPos = $t.selectionEnd;
+                    var scrollTop = $t.scrollTop;
+                    $t.value = $t.value.substring(0, startPos) + myValue + $t.value.substring(endPos, $t.value.length);
+                    this.focus();
+                    $t.selectionStart = startPos + myValue.length;
+                    $t.selectionEnd = startPos + myValue.length;
+                    $t.scrollTop = scrollTop;
+                } else {
+                    this.value += myValue;
+                    this.focus();
+                }
+        }
+    });
+})(jQuery);

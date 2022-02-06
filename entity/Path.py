@@ -58,11 +58,8 @@ class Path(models.Model):
         ## 只删除当前文件夹下文件
         if self.number != 0:
             records = Record.getRecordByPath(self.id)
-            print('Record:')
-            print(records)
             for i in records:
                 i.dele()
-                self.number -= 1
         os.rmdir(self.realpath)
 
     def deleAll(id):

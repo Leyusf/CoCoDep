@@ -32,24 +32,22 @@
             <!--file system structure-->
             <div class="col-md-2">
                 <div class="root_box">
-                    <div style="display: inline">
+                    <div style="display: inline"  oncontextmenu="return false">
                         <div class="last" id="last" lastid="0"><p class="root">Last</p></div>
-                        <div class="current" pid="{{ root.id }}"><p class="root" id="current">{{ root.name }}</p></div>
+                        <div class="current" pid="{{ root.id }}"  oncontextmenu="showOperationMenu(this)"><p class="root" id="current">{{ root.name }}</p></div>
                     </div>
                 </div>
 
-                {% if content|length > 0 %}
                 <div class="child_box" oncontextmenu="return false">
                     {% for i in content %}
                         <div class="direct_box" eleType="{{ i.type }}" eleId="{{ i.id }}" oncontextmenu="showChildrenMenu(this)" onclick="next({{ i.id }},'{{ i.type }}')" ><p class="child">{{ i.name }}</p></div>
                     {% endfor %}
                 </div>
-                {% endif %}
             </div>
 
             <!--text pad-->
             <div class="col-md-8" style="padding-right:10px;height: 710px;padding-left: 0;margin-left: -5px">
-                <textarea class="edit_board"></textarea>
+                <textarea class="edit_board" id="edit" disabled="disabled" onkeydown="tab()"></textarea>
             </div>
 
             <!--chat room-->
@@ -88,5 +86,29 @@
         <li><a id="childType" href="javascript:void(0);"></a></li>
         <li><a id="del" href="javascript:void(0);">Delete</a></li>
     </ul>
+    <ul class="contextmenu" id="operation">
+        <li><a id="newPath" href="javascript:void(0);">New Path</a></li>
+        <li><a id="newFile" href="javascript:void(0);">New File</a></li>
+        <li><a id="addFile" href="javascript:void(0);">Add File</a></li>
+    </ul>
+    <form style="display:none;" method="post" action="/addFile/" id="fileAdd" enctype='multipart/form-data' >
+        <input type="file" id="save" name="file">
+        <input type="text" id="rid" name="rid">
+        <script src="/static/js/jquery.form.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#fileAdd").ajaxForm(function (data) {
+                        if (data['code']==0){
+                            goTo($(".current").attr('pid'))
+                        }
+                        else{
+                            alert("Cannot create this file.")
+                        }
+                    }
+                );
+            })
+        </script>
+    </form>
+
     </body>
     </html>
