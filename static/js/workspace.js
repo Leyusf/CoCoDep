@@ -1,16 +1,22 @@
 var websocket_url = 'http://' + document.domain + ':' + location.port + '/socket';
 var socket = io(websocket_url);
 var curElem;
+var curFileId;
+var content;
 $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#menu").css("display","none")
     })
-        document.addEventListener('click', function() {
+    document.addEventListener('click', function() {
         $("#operation").css("display","none")
     })
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
     var uid = $("title").attr('uid')
+    socket.on('readText', function(data) {
+        if (data['content']!=content)
+            $("#edit").val(data['content'])
+    })
     socket.on('connect', function() {
         socket.emit('join', {'gid': gid});
     })
@@ -143,9 +149,16 @@ $(document).ready(function(){
             })
         }
     })
-    $("#edit").keypress(function () {
-        // 给socket发送同步信息
+    $('#edit').on('input propertychange',function(){
+        content = $("#edit").val()
+        console.log(content)
+        socket.emit('writeAction', {'id': curFileId,'content':content});
     })
+    // $("#edit").input(function () {
+    //     // 给socket发送同步信息
+    //     console.log($("#edit").val())
+    //     socket.emit('writeAction', {'id': curFileId,'content':$("#edit").val()});
+    // })
 });
 function next(id,type) {
     if (type=='path'){
@@ -154,7 +167,10 @@ function next(id,type) {
         $("#edit").attr('disabled',"disabled")
     }
     else {
+        // 如果是文件，获取文件内容并展示
+        curFileId = id
         $("#edit").removeAttr('disabled')
+        socket.emit('readAction', {'id': id});
     }
 }
 function goTo(id){

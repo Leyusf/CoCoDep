@@ -508,3 +508,31 @@ def on_disconnect():
 def on_send(data):
     room = session['room']
     emit('receive', {'msg': data['msg'], 'uid': data['uid'], 'name': data['name']}, room=room)
+
+
+@socketio.on('readAction', namespace='/socket')
+def on_read(data):
+    room = session['room']
+    fid = data['id']
+    file = Record.get(fid)
+    try:
+        f = open(file.realpath, 'r', encoding='UTF-8').read()
+        emit('readText', {'content': f}, room=room)
+    except OSError as reason:
+        print('Error: %s' % str(reason))
+
+
+@socketio.on('writeAction', namespace='/socket')
+def on_write(data):
+    room = session['room']
+    fid = data['id']
+    content = data['content']
+    file = Record.get(fid)
+    try:
+        with open(file.realpath, 'r+', encoding='GBK') as f:
+            f.write(content)
+        emit('readText', {'content': content}, room=room)
+    except OSError as reason:
+        print('Error: %s' % str(reason))
+
+
