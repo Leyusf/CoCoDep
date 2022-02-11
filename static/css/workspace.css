@@ -217,3 +217,7 @@ textarea{
     word-wrap: break-word;
 	word-break: break-all;
 }
+audio{
+    height: 30px;
+    width: 100%;
+}

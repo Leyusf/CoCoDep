@@ -1,5 +1,5 @@
 import random
-
+import datetime
 from flask import session
 import time
 import os
@@ -93,3 +93,7 @@ def getAllChildren(path):
         tmp = {'id': i.id, 'name': i.name, 'type': 'file'}
         results.append(tmp)
     return results
+
+
+def now():
+    return datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')

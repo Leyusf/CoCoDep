@@ -14,7 +14,7 @@ from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir, get_files, isExisted, getAllChildren
+from tool.tool import randomGroup, mkdir, get_files, isExisted, getAllChildren, now
 
 private = Blueprint("private", __name__)
 
@@ -419,7 +419,6 @@ def newFile():
     realPath = os.path.join(realPath, name)
     record = Record(name, realPath, rid)
     record.put()
-    print(realPath)
     pathlib.Path(realPath).touch()
     root.number += 1
     return jsonify({'code': 0})
@@ -444,6 +443,14 @@ def addFile():
     file.save(realPath)
     root.number += 1
     return jsonify({'code': 0})
+
+
+@socketio.on('send_voice', namespace='/socket')
+def on_send_voice(data):
+    voice = data['file']
+    gid = data['gid']
+    uid = data['uid']
+    emit('voice', {'name': session['name'], 'voice': voice}, room=session['room'])
 
 
 @private.route('/checkChildrenPaths/', methods=['POST'])
@@ -512,12 +519,14 @@ def on_send(data):
 
 @socketio.on('readAction', namespace='/socket')
 def on_read(data):
+    print(data)
     room = session['room']
     fid = data['id']
     file = Record.get(fid)
     try:
         f = open(file.realpath, 'r', encoding='UTF-8').read()
-        emit('readText', {'content': f}, room=room)
+        print(fid)
+        emit('readText', {'content': f, 'id': fid}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))
 
@@ -531,8 +540,11 @@ def on_write(data):
     try:
         with open(file.realpath, 'r+', encoding='GBK') as f:
             f.write(content)
-        emit('readText', {'content': content}, room=room)
+        emit('readText', {'content': content, 'id': fid}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))
 
 
+@socketio.on('folderChange', namespace='/socket')
+def on_folder_change(data):
+    emit('folder', {'id': data['id']}, room=session['room'])

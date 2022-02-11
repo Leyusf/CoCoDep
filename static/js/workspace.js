@@ -10,12 +10,51 @@ $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#operation").css("display","none")
     })
+    var recorder = null;
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
     var uid = $("title").attr('uid')
+        $("#voice").click(function () {
+            if($(this).attr("flag")==0){
+                startRecording()
+                $(this).text("End")
+                $(this).attr("flag",1)
+            }
+            else{
+                recorder.stop();
+                console.log(recorder.getBlob())
+                socket.emit('send_voice', {'uid': uid, 'gid' : gid, 'file' : recorder.getBlob()});
+                $(this).attr("flag",0)
+                $(this).text("Record")
+            }
+        })
+        function startRecording() {
+            if(recorder != null) {
+                recorder.close();
+            }
+            Recorder.get(function (rec) {
+                recorder = rec;
+                recorder.start();
+            });
+        }
+    socket.on('folder', function (data){
+        if ($(".current").attr('pid')==data['id'])
+            goTo(data['id'])
+    })
+    socket.on('voice', function (data){
+        var arr = new Array(data['voice'])
+        var voice = new Blob(arr,{type: "audio/wav"})
+        $("#chat_pad").append('<div class="bubble" style="float: left;width: 100%"><div class="bubble_inner" style="float: left;width: 100%">' +
+            '<p style="float: left;">' + data['name'] + ": </p>" + '<audio controls src="' + window.URL.createObjectURL(voice) + '">' +
+            '</audio>' + '</div></div>')
+    })
     socket.on('readText', function(data) {
-        if (data['content']!=content)
+        if (curFileId!=data['id']){
+            return
+        }
+        if (data['content']!=content){
             $("#edit").val(data['content'])
+        }
     })
     socket.on('connect', function() {
         socket.emit('join', {'gid': gid});
@@ -54,7 +93,7 @@ $(document).ready(function(){
                 },
                 success:function (data) {
                     if (data['code']==0){
-                        goTo(rid)
+                        socket.emit('folderChange', {'id': rid});
                     }
                     else{
                         alert("Cannot create this folder.")
@@ -90,7 +129,8 @@ $(document).ready(function(){
                 },
                 success:function (data) {
                     if (data['code']==0){
-                        goTo(rid)
+                        socket.emit('folderChange', {'id': rid});
+                        // goTo(rid)
                     }
                     else{
                         alert("Cannot create this file.")
@@ -123,7 +163,8 @@ $(document).ready(function(){
                 success:function (data) {
                     if (data['code']==0){
                         var id = $(".current").attr('pid')
-                        goTo(id)
+                        socket.emit('folderChange', {'id': id});
+                        // goTo(id)
                     }
                 }
             })
@@ -143,7 +184,8 @@ $(document).ready(function(){
                 success:function (data) {
                     if (data['code']==0){
                         var id = $(".current").attr('pid')
-                        goTo(id)
+                        socket.emit('folderChange', {'id': id});
+                        // goTo(id)
                     }
                 }
             })
@@ -154,11 +196,6 @@ $(document).ready(function(){
         console.log(content)
         socket.emit('writeAction', {'id': curFileId,'content':content});
     })
-    // $("#edit").input(function () {
-    //     // 给socket发送同步信息
-    //     console.log($("#edit").val())
-    //     socket.emit('writeAction', {'id': curFileId,'content':$("#edit").val()});
-    // })
 });
 function next(id,type) {
     if (type=='path'){
@@ -305,3 +342,15 @@ function tab(){
         }
     });
 })(jQuery);
+$(function () {
+                $("#fileAdd").ajaxForm(function (data) {
+                        if (data['code']==0){
+                            socket.emit('folderChange', {'id': $(".current").attr('pid')});
+                            // goTo($(".current").attr('pid'))
+                        }
+                        else{
+                            alert("Cannot create this file.")
+                        }
+                    }
+                );
+            })

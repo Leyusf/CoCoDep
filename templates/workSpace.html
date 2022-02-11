@@ -18,9 +18,10 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
-        <script src="/static/js/jquery-1.7.2.js"></script>
         <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
         <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery-1.7.2.js"></script>
+        <script src="/static/js/recorder.js"></script>
         <script src="/static/js/workspace.js"></script>
         <link href="https://at.alicdn.com/t/font_1551254_rxrrzgz2kjc.css" rel="stylesheet" type="text/css" />
     </head>
@@ -74,7 +75,7 @@
                     <textarea class="input_area"></textarea>
                 </div>
                 <div style="height: 10%;padding: 15px 15px 15px;">
-                    <button style="float: left;background: #ec4242;outline: 2px #960404;font-size: 20px;" class="btn">Send</button>
+                    <button style="float: left;background: #ec4242;outline: 2px #960404;font-size: 20px;" class="btn" id="voice" flag="0">Record</button>
                     <button style="float: right;background: #60daba;outline: 2px #0d6539;font-size: 20px;" class="btn" id="send_btn">Send</button>
                 </div>
             </div>
@@ -96,19 +97,9 @@
         <input type="text" id="rid" name="rid">
         <script src="/static/js/jquery.form.js"></script>
         <script type="text/javascript">
-            $(function () {
-                $("#fileAdd").ajaxForm(function (data) {
-                        if (data['code']==0){
-                            goTo($(".current").attr('pid'))
-                        }
-                        else{
-                            alert("Cannot create this file.")
-                        }
-                    }
-                );
-            })
+
         </script>
     </form>
-
+    <audio id="audioSave" controls autoplay style="display: none"></audio>
     </body>
     </html>
