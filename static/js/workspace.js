@@ -3,6 +3,8 @@ var socket = io(websocket_url);
 var curElem;
 var curFileId;
 var content;
+// 0表示没有他人输入，1表示需要先处理他人输入
+var readFlag = 0;
 $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#menu").css("display","none")
@@ -49,6 +51,8 @@ $(document).ready(function(){
             '</audio>' + '</div></div>')
     })
     socket.on('readText', function(data) {
+        readFlag = 1;
+        // 处理读入
         if (curFileId!=data['id']){
             return
         }
@@ -130,7 +134,6 @@ $(document).ready(function(){
                 success:function (data) {
                     if (data['code']==0){
                         socket.emit('folderChange', {'id': rid});
-                        // goTo(rid)
                     }
                     else{
                         alert("Cannot create this file.")
@@ -164,7 +167,6 @@ $(document).ready(function(){
                     if (data['code']==0){
                         var id = $(".current").attr('pid')
                         socket.emit('folderChange', {'id': id});
-                        // goTo(id)
                     }
                 }
             })
@@ -185,16 +187,39 @@ $(document).ready(function(){
                     if (data['code']==0){
                         var id = $(".current").attr('pid')
                         socket.emit('folderChange', {'id': id});
-                        // goTo(id)
                     }
                 }
             })
         }
     })
+    $("#edit").scroll(function(){
+        $("#num").scrollTop($(this).scrollTop()); // 纵向滚动条
+    });
+    $("#num").scroll(function(){
+        $("#edit").scrollTop($(this).scrollTop());
+    });
     $('#edit').on('input propertychange',function(){
-        content = $("#edit").val()
-        console.log(content)
-        socket.emit('writeAction', {'id': curFileId,'content':content});
+        // 对于他人输入不做处理
+        if (readFlag==1)
+            return
+        // 自己的输入进行处理
+        var num = Number($(this).val().split("\n").length)
+        var curNum = Number($("#num").attr('total'))
+        if (num>curNum){
+            for (var i=curNum+1;i<=num;i++) {
+                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
+                $("#num").append(str)
+            }
+        }
+        else if (num<curNum){
+            $("#num").html("")
+            for (var i=1;i<=num;i++) {
+                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
+                $("#num").append(str)
+            }
+        }
+        $("#num").attr('total',num)
+        // socket.emit('writeAction', {'id': curFileId,'content':content});
     })
 });
 function next(id,type) {
@@ -342,6 +367,80 @@ function tab(){
         }
     });
 })(jQuery);
+(function($, h, c) {
+    var a = $([]),
+        e = $.resize = $.extend($.resize, {}),
+        i,
+        k = "setTimeout",
+        j = "resize",
+        d = j + "-special-event",
+        b = "delay",
+        f = "throttleWindow";
+    e[b] = 250;
+    e[f] = true;
+    $.event.special[j] = {
+        setup: function() {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var l = $(this);
+            a = a.add(l);
+            $.data(this, d, {
+                w: l.width(),
+                h: l.height()
+            });
+            if (a.length === 1) {
+                g();
+            }
+        },
+        teardown: function() {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var l = $(this);
+            a = a.not(l);
+            l.removeData(d);
+            if (!a.length) {
+                clearTimeout(i);
+            }
+        },
+        add: function(l) {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var n;
+            function m(s, o, p) {
+                var q = $(this),
+                    r = $.data(this, d);
+                r.w = o !== c ? o: q.width();
+                r.h = p !== c ? p: q.height();
+                n.apply(this, arguments);
+            }
+            if ($.isFunction(l)) {
+                n = l;
+                return m;
+            } else {
+                n = l.handler;
+                l.handler = m;
+            }
+        }
+    };
+    function g() {
+        i = h[k](function() {
+                a.each(function() {
+                    var n = $(this),
+                        m = n.width(),
+                        l = n.height(),
+                        o = $.data(this, d);
+                    if (m !== o.w || l !== o.h) {
+                        n.trigger(j, [o.w = m, o.h = l]);
+                    }
+                });
+                g();
+            },
+            e[b]);
+    }
+})(jQuery, this);
 $(function () {
                 $("#fileAdd").ajaxForm(function (data) {
                         if (data['code']==0){

@@ -57,6 +57,7 @@ textarea{
     overflow:auto;
 }
 .child_box::-webkit-scrollbar {/*滚动条整体样式*/
+        cursor: pointer;
         width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
 }
@@ -95,21 +96,79 @@ textarea{
     background: #464646;
     color: white;font-size: 20px;
     font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+    overflow: hidden;
 }
-.edit_board::-webkit-scrollbar {/*滚动条整体样式*/
-        width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-        height: 1px;
+#edit{
+    width:100%;
+    border-radius: 2px;
+    height: 100%;
+    background: #464646;
+    color: white;font-size: 20px;
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+    padding-top: 0;
+    border: 0;
+    outline: 0;
+    overflow: auto;
+    overflow: paged-y;
 }
-.edit_board::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-        border-radius: 10px;
-         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        background: #535353;
+#num{
+    overflow: hidden;
 }
-.edit_board::-webkit-scrollbar-track {/*滚动条里面轨道*/
-        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        border-radius: 10px;
-        background: #EDEDED;
+.edit_div{
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 100%;
+    float: left;
+    line-height: 29px;
 }
+.lineNum{
+    margin-bottom: 0;
+}
+.editable{
+    width: 100%;
+    background: none;
+    color: white;
+    font-size: 20px;
+    height: 100%;
+    line-height: 29px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.editable:focus{
+    outline: none;
+}
+  #edit::-webkit-scrollbar {  /* 滚动条整体部分 */
+      width:10px;
+      margin-right:2px
+  }
+  #edit::-webkit-scrollbar-button { /* 滚动条两端的按钮 */
+      width:10px;
+      background-color: #535353;
+  }
+  #edit::-webkit-scrollbar:horizontal {
+      height:10px;
+      margin-bottom:2px
+  }
+  #edit::-webkit-scrollbar-track {  /* 外层轨道 */
+      border-radius: 10px;
+  }
+  #edit::-webkit-scrollbar-track-piece {  /*内层轨道，滚动条中间部分 */
+      background-color: #333333;
+      border-radius: 10px;
+  }
+  #edit::-webkit-scrollbar-thumb {  /* 滑块 */
+      width:10px;
+      border-radius: 5px;
+      background: #CBCBCB;
+  }
+  #edit::-webkit-scrollbar-corner { /* 边角 */
+      width: 10px;
+      background-color: red;
+  }
+  #edit::-webkit-scrollbar-thumb:hover { /* 鼠标移入滑块 */
+      background: #909090;
+  }
+
 .chat_board{
     height:100%;
     /*background: #362c65;*/
@@ -123,6 +182,7 @@ textarea{
     font-size: 18px;
 }
 .input_area::-webkit-scrollbar {/*滚动条整体样式*/
+        cursor: pointer;
         width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
 }
@@ -151,6 +211,7 @@ textarea{
     background: #362c65;
 }
 .name_list::-webkit-scrollbar {/*滚动条整体样式*/
+        cursor: pointer;
         width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
 }
@@ -184,6 +245,7 @@ textarea{
 }
 
 .chat_pad::-webkit-scrollbar {/*滚动条整体样式*/
+        cursor: pointer;
         width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
 }

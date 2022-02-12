@@ -48,7 +48,12 @@
 
             <!--text pad-->
             <div class="col-md-8" style="padding-right:10px;height: 710px;padding-left: 0;margin-left: -5px">
-                <textarea class="edit_board" id="edit" disabled="disabled" onkeydown="tab()"></textarea>
+                <div class="edit_board row">
+                    <div style="width: 5%;" class="edit_div" id="num" total="1"><p line="1" class="lineNum">1</p></div>
+                    <div style="width: 95%;" class="edit_div line">
+                        <textarea wrap="off" id="edit" onkeydown="tab()"></textarea>
+                    </div>
+                </div>
             </div>
 
             <!--chat room-->
@@ -65,6 +70,7 @@
                         <div style="height: 10px;background: #a355ec;"></div>
 
                         <div class="chat_pad" id="chat_pad">
+
                         </div>
 
                     </div>
