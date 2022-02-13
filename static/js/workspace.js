@@ -6,6 +6,7 @@ var content;
 // 0表示没有他人输入，1表示需要先处理他人输入
 var readFlag = 0;
 var content = ""
+var uid;
 $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#menu").css("display","none")
@@ -16,7 +17,7 @@ $(document).ready(function(){
     var recorder = null;
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
-    var uid = $("title").attr('uid')
+    uid = $("title").attr('uid')
         $("#voice").click(function () {
             if($(this).attr("flag")==0){
                 startRecording()
@@ -191,40 +192,63 @@ $(document).ready(function(){
     });
     socket.on('readText', function(data) {
         // 不是一个文件
+        console.log(data)
+        console.log(curFileId)
         if (curFileId!=data['id']){
             return
         }
         // 是一个文件
-        if (data['content']!=content){
+        if (uid==data['uid']){
             $("#edit").val(data['content'])
             content = data['content']
+            var num = Number(content.split("\n").length)
+            var curNum = Number($("#num").attr('total'))
+            lineCount(num,curNum)
+        }
+
+    })
+    socket.on('readChange', function(data) {
+        // 不是一个文件
+        console.log("*******************")
+        console.log(data)
+        console.log("*******************")
+        if (curFileId!=data['fid']){
+            return
+        }
+        if (data['uid']!=uid){
+            readFlag = 1
+            var pad = document.getElementById('edit')
+            if (data['operation']==0){
+                pad.setRangeText(data['content'],data['start'],data['end'],'end')
+            }
+            else if (data['operation']==1){
+                pad.setRangeText(data['content'],data['start'],data['start'],'end')
+            }
+            else{
+                pad.setRangeText("",data['start'],data['end'],'end')
+                pad.setRangeText(data['content'],data['start'],data['start'],'end')
+            }
+            content = $("#edit").val()
+            var num = Number(content.split("\n").length)
+            var curNum = Number($("#num").attr('total'))
+            lineCount(num,curNum)
         }
     })
     // 判断文件的变化
     $('#edit').on('input propertychange',function(){
         let i;
-// 对于他人输入不做处理
+        console.log("F: " + readFlag)
+        // 对于他人输入不做处理
         if (readFlag==1){
             readFlag = 0
+            console.log("RES: " + readFlag)
             return
         }
+        console.log("RES: " + readFlag)
         // 自己的输入进行处理
         var num = Number($(this).val().split("\n").length)
         var curNum = Number($("#num").attr('total'))
-        if (num>curNum){
-            for (i = curNum+1; i<=num; i++) {
-                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
-                $("#num").append(str)
-            }
-        }
-        else if (num<curNum){
-            $("#num").html("")
-            for (i = 1; i<=num; i++) {
-                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
-                $("#num").append(str)
-            }
-        }
-        $("#num").attr('total',num)
+        lineCount(num,curNum)
         var startP = -1, endP = -1, diff=""
         var cur_content = $(this).val()
         var oldLength = content.length
@@ -232,7 +256,6 @@ $(document).ready(function(){
         var deltaLength = newLength - oldLength
         var operation;
         var it;
-        console.log("D: " + deltaLength)
         if (deltaLength>0){
             operation = 1
             for (i = 0; i<oldLength; i++){
@@ -288,13 +311,18 @@ $(document).ready(function(){
                 endP = deltaLength * -1
             }
             else{
-                console.log(startP)
-                console.log(endP)
                 diff = cur_content.substring(startP,newLength-it+1)
-                console.log(diff)
+                if (startP==endP){
+                    diff = ""
+                    endP+=1
+                }
             }
         }
+        console.log("--------------------------")
+        console.log(startP)
+        console.log(endP)
         console.log(diff)
+        console.log("--------------------------")
         socket.emit('writeAction', {'fid': curFileId, 'uid':uid, 'content':diff, 'start':startP, 'end':endP, 'operation':operation});
         content = $(this).val()
     })
@@ -304,12 +332,14 @@ function next(id,type) {
         goTo(id)
         $("#edit").val("")
         $("#edit").attr('disabled',"disabled")
+        content = ""
+        curFileId = 0
     }
     else {
         // 如果是文件，获取文件内容并展示
         curFileId = id
         $("#edit").removeAttr('disabled')
-        socket.emit('readAction', {'id': id});
+        socket.emit('readAction', {'id': id, 'uid': uid});
     }
 }
 function goTo(id){
@@ -415,6 +445,23 @@ function tab(){
      $("#edit").insertAtCaret("\t");
      event.returnValue = false;
   }
+}
+function lineCount(num,curNum){
+    let i;
+    if (num>curNum){
+            for (i = curNum+1; i<=num; i++) {
+                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
+                $("#num").append(str)
+            }
+        }
+        else if (num<curNum){
+            $("#num").html("")
+            for (i = 1; i<=num; i++) {
+                var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
+                $("#num").append(str)
+            }
+        }
+        $("#num").attr('total',num)
 }
 // 可以在光标处插入文本
 (function ($) {
