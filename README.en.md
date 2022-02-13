@@ -21,15 +21,25 @@ The full version of real-time online collaboration system supports the following
 
 #### Software Architecture
 Python 3.10.0
+
 click==8.0.3
+
 colorama==0.4.4
+
 Flask==2.0.2
+
 Flask-Cors==3.0.10
+
 itsdangerous==2.0.1
+
 Jinja2==3.0.3
+
 MarkupSafe==2.0.1
+
 numpy==1.22.0
+
 six==1.16.0
+
 Werkzeug==2.0.2
 
 MySQL 8.1.0
