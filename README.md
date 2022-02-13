@@ -1,39 +1,38 @@
 # CoCoDep
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+完全版的实时在线协作系统，支持以下功能。
+1. 用户注册，可以注册成为教师或者学生
+2. 教师可以创建课程
+3. 教师可以为每个课程模块添加学生名单
+4. 教师可以发布协作人物，系统会根据小组的数量和成员数量自动分组学生
+5. 学生可以访问小组协作模块
+6. 学生可以通过文字和语音交流
+7. 学生在系统内可以创建文件和项目
+8. 学生可以多人实时协作编辑一个文件
 
 #### 软件架构
-软件架构说明
+Python 3.10.0
+click==8.0.3
+colorama==0.4.4
+Flask==2.0.2
+Flask-Cors==3.0.10
+itsdangerous==2.0.1
+Jinja2==3.0.3
+MarkupSafe==2.0.1
+numpy==1.22.0
+six==1.16.0
+Werkzeug==2.0.2
+
+MySQL 8.1.0
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  使用requirements.txt创建虚拟环境
+2.  修改app.py中的相关配置
+3.  使用pycharm启动服务
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1. 教师在导入学生时上传的文件请参考students.xls和students2.xls

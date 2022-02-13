@@ -1,36 +1,48 @@
 # CoCoDep
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+####Introduction
+The full version of real-time online collaboration system supports the following functions.
+
+2. Users can register as teachers or students by registering
+
+3. Teachers can create courses
+
+4. Teachers can add student lists for each course module
+
+5. Teachers can publish collaborative characters, and the system will automatically group students according to the number of groups and members
+
+6. Students can access the group collaboration module
+
+7. Students can communicate through words and voice
+
+8. Students can create files and projects in the system
+
+9. Students can edit a file in real-time collaboration
 
 #### Software Architecture
-Software architecture description
+Python 3.10.0
+click==8.0.3
+colorama==0.4.4
+Flask==2.0.2
+Flask-Cors==3.0.10
+itsdangerous==2.0.1
+Jinja2==3.0.3
+MarkupSafe==2.0.1
+numpy==1.22.0
+six==1.16.0
+Werkzeug==2.0.2
+
+MySQL 8.1.0
 
 #### Installation
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. Use requirements.txt to create virtual environment
+
+2. Modify relevant configurations in app.py
+
+3. Use pycharm to run the service
 
 #### Instructions
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. Please refer to students.xls and students2.xls when teachers import students name list. 
 
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
