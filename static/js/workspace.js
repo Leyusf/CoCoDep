@@ -5,6 +5,7 @@ var curFileId;
 var content;
 // 0表示没有他人输入，1表示需要先处理他人输入
 var readFlag = 0;
+var content = ""
 $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#menu").css("display","none")
@@ -49,16 +50,6 @@ $(document).ready(function(){
         $("#chat_pad").append('<div class="bubble" style="float: left;width: 100%"><div class="bubble_inner" style="float: left;width: 100%">' +
             '<p style="float: left;">' + data['name'] + ": </p>" + '<audio controls src="' + window.URL.createObjectURL(voice) + '">' +
             '</audio>' + '</div></div>')
-    })
-    socket.on('readText', function(data) {
-        readFlag = 1;
-        // 处理读入
-        if (curFileId!=data['id']){
-            return
-        }
-        if (data['content']!=content){
-            $("#edit").val(data['content'])
-        }
     })
     socket.on('connect', function() {
         socket.emit('join', {'gid': gid});
@@ -198,28 +189,114 @@ $(document).ready(function(){
     $("#num").scroll(function(){
         $("#edit").scrollTop($(this).scrollTop());
     });
-    $('#edit').on('input propertychange',function(){
-        // 对于他人输入不做处理
-        if (readFlag==1)
+    socket.on('readText', function(data) {
+        // 不是一个文件
+        if (curFileId!=data['id']){
             return
+        }
+        // 是一个文件
+        if (data['content']!=content){
+            $("#edit").val(data['content'])
+            content = data['content']
+        }
+    })
+    // 判断文件的变化
+    $('#edit').on('input propertychange',function(){
+        let i;
+// 对于他人输入不做处理
+        if (readFlag==1){
+            readFlag = 0
+            return
+        }
         // 自己的输入进行处理
         var num = Number($(this).val().split("\n").length)
         var curNum = Number($("#num").attr('total'))
         if (num>curNum){
-            for (var i=curNum+1;i<=num;i++) {
+            for (i = curNum+1; i<=num; i++) {
                 var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
                 $("#num").append(str)
             }
         }
         else if (num<curNum){
             $("#num").html("")
-            for (var i=1;i<=num;i++) {
+            for (i = 1; i<=num; i++) {
                 var str = '<p line="' + i + '" class="lineNum">' + i +'</p>'
                 $("#num").append(str)
             }
         }
         $("#num").attr('total',num)
-        // socket.emit('writeAction', {'id': curFileId,'content':content});
+        var startP = -1, endP = -1, diff=""
+        var cur_content = $(this).val()
+        var oldLength = content.length
+        var newLength = cur_content.length
+        var deltaLength = newLength - oldLength
+        var operation;
+        var it;
+        console.log("D: " + deltaLength)
+        if (deltaLength>0){
+            operation = 1
+            for (i = 0; i<oldLength; i++){
+                if (cur_content[i]!=content[i]){
+                    startP = i
+                    break
+                }
+            }
+            if (startP==-1){
+                startP = oldLength
+                endP = newLength
+            }
+            endP = startP + deltaLength
+            diff = cur_content.substring(startP,endP)
+        }
+        else if (deltaLength==0){
+            operation = 0
+            for (i = 0; i<oldLength; i++){
+                if (cur_content[i]!=content[i]){
+                    startP = i
+                    break
+                }
+            }
+            for (i = oldLength-1; i>=0; i--){
+                if (cur_content[i]!=content[i]){
+                    endP = i + 1
+                    break
+                }
+            }
+            diff = cur_content.substring(startP,endP)
+        }
+        else{
+            operation = -1
+            for (i = 0; i<newLength; i++){
+                if (cur_content[i]!=content[i]){
+                    startP = i
+                    break
+                }
+            }
+            for (i = 1; i<=newLength; i++){
+                if (cur_content[newLength-i]!=content[oldLength-i]){
+                    endP = oldLength-i+1
+                    it = i
+                    break
+                }
+            }
+            if (startP==-1){
+                startP = newLength
+                endP = oldLength
+            }
+            else if (endP==-1){
+                startP = 0
+                endP = deltaLength * -1
+            }
+            else{
+                console.log(startP)
+                console.log(endP)
+                diff = cur_content.substring(startP,newLength-it+1)
+                console.log(diff)
+            }
+        }
+        console.log(diff)
+        socket.emit('writeAction', {'fid': curFileId, 'uid':uid, 'content':diff, 'start':startP, 'end':endP, 'operation':operation});
+        content = $(this).val()
     })
 });
 function next(id,type) {

@@ -519,13 +519,11 @@ def on_send(data):
 
 @socketio.on('readAction', namespace='/socket')
 def on_read(data):
-    print(data)
     room = session['room']
     fid = data['id']
     file = Record.get(fid)
     try:
-        f = open(file.realpath, 'r', encoding='UTF-8').read()
-        print(fid)
+        f = open(file.realpath, 'r', encoding='GBK').read()
         emit('readText', {'content': f, 'id': fid}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))
@@ -534,13 +532,20 @@ def on_read(data):
 @socketio.on('writeAction', namespace='/socket')
 def on_write(data):
     room = session['room']
-    fid = data['id']
+    fid = data['fid']
     content = data['content']
     file = Record.get(fid)
     try:
-        with open(file.realpath, 'r+', encoding='GBK') as f:
-            f.write(content)
-        emit('readText', {'content': content, 'id': fid}, room=room)
+        text = open(file.realpath, 'r', encoding='GBK').read()
+        if data['operation'] is 1:
+            text = text[:data['start']] + content + text[data['start']:]
+        elif data['operation'] is 0:
+            text = text[:data['start']] + content + text[data['end']:]
+        else:
+            text = text[:data['start']] + content + text[data['end']:]
+        open(file.realpath, 'w', encoding='GBK').write(text)
+        emit('readChange', {'content': content, 'fid': fid, 'uid': data['uid'],
+                            'start': data['start'], 'end': data['end'], 'operation': ['operation']}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))
 
