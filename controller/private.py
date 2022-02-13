@@ -14,15 +14,15 @@ from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir, get_files, isExisted, getAllChildren, now
+from tool.tool import randomGroup, mkdir, isExisted, getAllChildren
 
 private = Blueprint("private", __name__)
 
 
-# @private.before_request
-# def before():
-#     if not session.get('login'):
-#         return 'Please log in'
+@private.before_request
+def before():
+    if not session.get('login'):
+        return 'Please log in'
 
 
 @private.route('/modify/')
@@ -543,9 +543,6 @@ def on_write(data):
         elif data['operation'] is 0:
             text = text[:data['start']] + content + text[data['start']:]
         else:
-            print('<' + text[:data['start']] + '>')
-            print('<' + content + '>')
-            print('<' + text[data['end']:] + '>')
             text = text[:data['start']] + content + text[data['end']:]
         open(file.realpath, 'w', encoding='GBK').write(text)
         emit('readChange', {'content': content, 'fid': fid, 'uid': data['uid'],

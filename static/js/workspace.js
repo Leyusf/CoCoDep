@@ -14,6 +14,7 @@ $(document).ready(function(){
     document.addEventListener('click', function() {
         $("#operation").css("display","none")
     })
+    $("textarea").attr('spellcheck','false')
     var recorder = null;
     var gid = $("title").attr('gid')
     var name = $("title").attr('uname')
@@ -26,7 +27,6 @@ $(document).ready(function(){
             }
             else{
                 recorder.stop();
-                console.log(recorder.getBlob())
                 socket.emit('send_voice', {'uid': uid, 'gid' : gid, 'file' : recorder.getBlob()});
                 $(this).attr("flag",0)
                 $(this).text("Record")
@@ -192,8 +192,6 @@ $(document).ready(function(){
     });
     socket.on('readText', function(data) {
         // 不是一个文件
-        console.log(data)
-        console.log(curFileId)
         if (curFileId!=data['id']){
             return
         }
@@ -209,9 +207,6 @@ $(document).ready(function(){
     })
     socket.on('readChange', function(data) {
         // 不是一个文件
-        console.log("*******************")
-        console.log(data)
-        console.log("*******************")
         if (curFileId!=data['fid']){
             return
         }
@@ -237,14 +232,11 @@ $(document).ready(function(){
     // 判断文件的变化
     $('#edit').on('input propertychange',function(){
         let i;
-        console.log("F: " + readFlag)
         // 对于他人输入不做处理
         if (readFlag==1){
             readFlag = 0
-            console.log("RES: " + readFlag)
             return
         }
-        console.log("RES: " + readFlag)
         // 自己的输入进行处理
         var num = Number($(this).val().split("\n").length)
         var curNum = Number($("#num").attr('total'))
@@ -318,11 +310,6 @@ $(document).ready(function(){
                 }
             }
         }
-        console.log("--------------------------")
-        console.log(startP)
-        console.log(endP)
-        console.log(diff)
-        console.log("--------------------------")
         socket.emit('writeAction', {'fid': curFileId, 'uid':uid, 'content':diff, 'start':startP, 'end':endP, 'operation':operation});
         content = $(this).val()
     })
