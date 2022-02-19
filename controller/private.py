@@ -530,6 +530,27 @@ def on_read(data):
         print('Error: %s' % str(reason))
 
 
+# @socketio.on('writeAction', namespace='/socket')
+# def on_write(data):
+#     room = session['room']
+#     fid = data['fid']
+#     content = data['content']
+#     file = Record.get(fid)
+#     try:
+#         text = open(file.realpath, 'r', encoding='GBK').read()
+#         if data['operation'] is 1:
+#             text = text[:data['start']] + content + text[data['start']:]
+#         elif data['operation'] is 0:
+#             text = text[:data['start']] + content + text[data['start']:]
+#         else:
+#             text = text[:data['start']] + content + text[data['end']:]
+#         open(file.realpath, 'w', encoding='GBK').write(text)
+#         emit('readChange', {'content': content, 'fid': fid, 'uid': data['uid'],
+#                             'start': data['start'], 'end': data['end'], 'operation': data['operation']}, room=room)
+#     except OSError as reason:
+#         print('Error: %s' % str(reason))
+
+
 @socketio.on('writeAction', namespace='/socket')
 def on_write(data):
     room = session['room']
@@ -537,16 +558,9 @@ def on_write(data):
     content = data['content']
     file = Record.get(fid)
     try:
-        text = open(file.realpath, 'r', encoding='GBK').read()
-        if data['operation'] is 1:
-            text = text[:data['start']] + content + text[data['start']:]
-        elif data['operation'] is 0:
-            text = text[:data['start']] + content + text[data['start']:]
-        else:
-            text = text[:data['start']] + content + text[data['end']:]
-        open(file.realpath, 'w', encoding='GBK').write(text)
+        open(file.realpath, 'w', encoding='GBK').write(content)
         emit('readChange', {'content': content, 'fid': fid, 'uid': data['uid'],
-                            'start': data['start'], 'end': data['end'], 'operation': data['operation']}, room=room)
+                            'start': data['start']}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))
 
