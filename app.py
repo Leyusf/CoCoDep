@@ -119,9 +119,6 @@ def addStudent():
     return jsonify({'code': 0, 'msg': 'successfully'})
 
 
-
-
-
 # 注册蓝图
 from controller.access import *
 from controller.private import *
