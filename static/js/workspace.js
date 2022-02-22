@@ -492,7 +492,7 @@ $(document).ready(function(){
                 break
             }
         }
-        socket.emit('writeAction', {'fid': curFileId, 'uid':uid, 'content':cur_content, 'start':startP});
+        socket.emit('writeAction', {'fid': curFileId, 'uid':uid, 'content':cur_content, 'start':startP, 'count': newLength - oldLength});
         content = $(this).val()
     })
 });

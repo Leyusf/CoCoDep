@@ -8,6 +8,7 @@ from flask_socketio import emit, join_room, leave_room, rooms
 from app import models, app, organizationName, organizationInfo, organizationEmail, socketio
 from entity.File import Record
 from entity.Group import Group
+from entity.Work import Work
 from entity.GroupMember import GroupMember as GM
 from entity.Module import Module
 from entity.Path import Path
@@ -400,6 +401,8 @@ def newPath():
     mkdir(realPath)
     path = Path(gid, pathName, realPath, lastid=rid)
     path.put()
+    work = Work(session['id'], gid, "Create Path", pathName)
+    work.put()
     return jsonify({'code': 0})
 
 
@@ -421,6 +424,8 @@ def newFile():
     record.put()
     pathlib.Path(realPath).touch()
     root.number += 1
+    work = Work(session['id'], root.gid, "Create File", name)
+    work.put()
     return jsonify({'code': 0})
 
 
@@ -442,6 +447,8 @@ def addFile():
     record.put()
     file.save(realPath)
     root.number += 1
+    work = Work(session['id'], root.gid, "Upload File", file.filename)
+    work.put()
     return jsonify({'code': 0})
 
 
@@ -451,6 +458,13 @@ def on_send_voice(data):
     gid = data['gid']
     uid = data['uid']
     emit('voice', {'name': session['name'], 'voice': voice}, room=session['room'])
+    work = Work.getWorkByOperation(uid, gid, "Speak")
+    if work is None:
+        work = Work(uid, gid, "Speak", 1)
+        work.put()
+    else:
+        work.info = str(int(work.info) + 1)
+        models.session.commit()
 
 
 @private.route('/checkChildrenPaths/', methods=['POST'])
@@ -468,6 +482,8 @@ def deleteFile():
     if file is None:
         return jsonify({'code': -1})
     root = Path.get(file.pathid)
+    work = Work(session['id'], root.gid, "Delete File", file.name)
+    work.put()
     root.number -= 1
     file.dele()
     return jsonify({'code': 0})
@@ -480,6 +496,8 @@ def deletePath():
     if path is None:
         return jsonify({'code': -1})
     root = Path.get(path.lastid)
+    work = Work(session['id'], path.gid, "Delete Path", path.name)
+    work.put()
     root.number -= 1
     Path.deleAll(id)
     return jsonify({'code': 0})
@@ -501,6 +519,8 @@ def on_join(data):
     room = data['gid']
     session['room'] = room
     join_room(room)
+    work = Work(session['id'], room, "Join", "")
+    work.put()
     emit('sysMsg', {'data': session['name'] + ' joins the room.'}, room=room)
 
 
@@ -508,12 +528,21 @@ def on_join(data):
 def on_disconnect():
     room = session['room']
     leave_room(room)
+    work = Work(session['id'], room, "Leave", "")
+    work.put()
     emit('sysMsg', {'data': session['name'] + ' leaves the room.'}, room=room)
 
 
 @socketio.on('send', namespace='/socket')
 def on_send(data):
     room = session['room']
+    work = Work.getWorkByOperation(session['id'], room, "Chat")
+    if work is None:
+        work = Work(session['id'], room, "Chat", len(data['msg']))
+        work.put()
+    else:
+        work.info = str(int(work.info) + len(data['msg']))
+        models.session.commit()
     emit('receive', {'msg': data['msg'], 'uid': data['uid'], 'name': data['name']}, room=room)
 
 
@@ -557,10 +586,25 @@ def on_write(data):
     fid = data['fid']
     content = data['content']
     file = Record.get(fid)
+    count = data['count']
     try:
         open(file.realpath, 'w', encoding='GBK').write(content)
         emit('readChange', {'content': content, 'fid': fid, 'uid': data['uid'],
                             'start': data['start']}, room=room)
+        op = "Add"
+        if count == 0:
+            op = "Modify"
+            count = 1
+        elif count < 0:
+            op = "Delete"
+            count *= -1
+        work = Work.getWorkByOperation(data['uid'], room, op)
+        if work is None:
+            work = Work(data['uid'], room, op, count)
+            work.put()
+        else:
+            work.info = str(int(work.info) + count)
+            models.session.commit()
     except OSError as reason:
         print('Error: %s' % str(reason))
 

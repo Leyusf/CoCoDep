@@ -37,9 +37,10 @@ from entity.Group import Group
 from entity.GroupMember import GroupMember
 from entity.Path import Path
 from entity.File import Record
+from entity.Work import Work
 
-# models.drop_all()
-# models.create_all()
+models.drop_all()
+models.create_all()
 
 organizationName = 'SWJTU-Leeds Joint School'
 organizationInfo = 'Address: SWJTU CHENGDU SiChuan Tel:  00000000000 Fax: 00000000000'

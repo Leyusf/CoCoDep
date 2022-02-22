@@ -1,7 +1,6 @@
 import os
 
 from app import models
-from sqlalchemy import and_
 
 from entity.File import Record
 

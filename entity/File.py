@@ -3,8 +3,6 @@ import os
 from app import models
 from datetime import datetime
 
-from entity.User import User
-
 
 class Record(models.Model):
     __tablename__ = 'record'  # 表名
