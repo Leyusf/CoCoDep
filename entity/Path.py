@@ -63,7 +63,6 @@ class Path(models.Model):
 
     def deleAll(id):
         root = Path.get(id)
-        print(root)
         for i in root.getChildren():
             Path.deleAll(i.id)
         root.dele()

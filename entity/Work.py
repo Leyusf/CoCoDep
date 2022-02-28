@@ -1,5 +1,6 @@
 from app import models
 import time
+from tool.tool import now
 
 
 class Work(models.Model):
@@ -15,13 +16,19 @@ class Work(models.Model):
         self.gid = gid
         self.operation = op
         self.info = info
-        self.time = str(time.time())
+        if op != "Join" and op != "Leave":
+            self.time = now()
+        else:
+            self.time = str(time.time())
 
     def getWork(uid, gid):
         return Work.query.filter(Work.uid == uid, Work.gid == gid).all()
 
     def getWorkByOperation(uid, gid, op):
-        return Work.query.filter(Work.uid == uid, Work.gid == gid, Work.operation == op).first()
+        res = Work.query.filter(Work.uid == uid, Work.gid == gid, Work.operation == op).all()
+        if not res:
+            return None
+        return res
 
     def put(self):
         models.session.add(self)

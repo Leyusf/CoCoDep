@@ -15,7 +15,7 @@ from entity.Path import Path
 from entity.Task import Task
 from entity.User import User
 from entity.ModuleStudent import MSTable as MS
-from tool.tool import randomGroup, mkdir, isExisted, getAllChildren
+from tool.tool import randomGroup, mkdir, isExisted, getAllChildren, log, zipDir
 
 private = Blueprint("private", __name__)
 
@@ -365,7 +365,69 @@ def taskInfo(id, page):
 def workSpace(id):
     group = Group.get(id)
     task = Task.get(group.TID)
-    user = User.get(session['id'])
+    user = User.get(session['email'])
+    groupMemberEmail = [i.email for i in GM.getAllByGroup(id)]
+    groupMember = []
+    for i in groupMemberEmail:
+        if i != session['email']:
+            groupMember.append(User.get(i).name)
+    if user.role == 1:
+        moduleName = Module.getById(task.MID).name
+        workCasesAdd = []
+        workCasesDelete = []
+        chatCase = []
+        speakCase = []
+        workLog = []
+        times = []
+        for i in groupMemberEmail:
+            j = User.get(i).name
+            add = Work.getWorkByOperation(User.get(i).id, id, "Add")
+            dele = Work.getWorkByOperation(User.get(i).id, id, "Delete")
+            chat = Work.getWorkByOperation(User.get(i).id, id, "Chat")
+            speak = Work.getWorkByOperation(User.get(i).id, id, "Speak")
+            pathCreate = Work.getWorkByOperation(User.get(i).id, id, "Create Path")
+            pathRemove = Work.getWorkByOperation(User.get(i).id, id, "Delete Path")
+            fileCreate = Work.getWorkByOperation(User.get(i).id, id, "Create File")
+            fileRemove = Work.getWorkByOperation(User.get(i).id, id, "Delete File")
+            joinTime = Work.getWorkByOperation(User.get(i).id, id, "Join")
+            leaveTime = Work.getWorkByOperation(User.get(i).id, id, "Leave")
+            time = 0
+            count = 0
+            if joinTime is None or leaveTime is None:
+                joinTime = []
+                leaveTime = []
+            for i in joinTime:
+                time -= float(i.time)
+                count += 1
+            for i in leaveTime:
+                if count == 0:
+                    break
+                count -= 1
+                time += float(i.time)
+            times.append(time)
+            if add is not None:
+                workCasesAdd.append(add[0].info)
+            else:
+                workCasesAdd.append(0)
+            if dele is not None:
+                workCasesDelete.append(dele[0].info)
+            else:
+                workCasesDelete.append(0)
+            if chat is not None:
+                chatCase.append(chat[0].info)
+            else:
+                chatCase.append(0)
+            if speak is not None:
+                speakCase.append(speak[0].info)
+            else:
+                speakCase.append(0)
+            workLog += log(pathCreate, j)
+            workLog += log(pathRemove, j)
+            workLog += log(fileCreate, j)
+            workLog += log(fileRemove, j)
+        workCases = [workCasesAdd, workCasesDelete, workLog, chatCase, speakCase, times]
+        return render_template("details.html", group=group, task=task, members=groupMember, workCases=workCases,
+                               module=moduleName)
     pathname = "T" + str(task.id) + "G" + str(group.id)
     mkdir(pathname)
     realPath = os.path.join(app.root_path, pathname)
@@ -373,12 +435,7 @@ def workSpace(id):
     if path is None:
         path = Path(id, pathname, realPath, root=True)
         path.put()
-    groupMemberEmail = [i.email for i in GM.getAllByGroup(id)]
-    groupMember = []
     results = getAllChildren(path)
-    for i in groupMemberEmail:
-        if i != session['email']:
-            groupMember.append(User.get(i).name)
     return render_template('workSpace.html', taskName=task.name, gid=id, user=user, members=groupMember, root=path,
                            content=results)
 
@@ -447,7 +504,7 @@ def addFile():
     record.put()
     file.save(realPath)
     root.number += 1
-    work = Work(session['id'], root.gid, "Upload File", file.filename)
+    work = Work(session['id'], root.gid, "Create File", file.filename)
     work.put()
     return jsonify({'code': 0})
 
@@ -459,11 +516,11 @@ def on_send_voice(data):
     uid = data['uid']
     emit('voice', {'name': session['name'], 'voice': voice}, room=session['room'])
     work = Work.getWorkByOperation(uid, gid, "Speak")
-    if work is None:
+    if not work:
         work = Work(uid, gid, "Speak", 1)
         work.put()
     else:
-        work.info = str(int(work.info) + 1)
+        work[0].info = str(int(work[0].info) + 1)
         models.session.commit()
 
 
@@ -537,11 +594,11 @@ def on_disconnect():
 def on_send(data):
     room = session['room']
     work = Work.getWorkByOperation(session['id'], room, "Chat")
-    if work is None:
+    if not work:
         work = Work(session['id'], room, "Chat", len(data['msg']))
         work.put()
     else:
-        work.info = str(int(work.info) + len(data['msg']))
+        work[0].info = str(int(work[0].info) + len(data['msg']))
         models.session.commit()
     emit('receive', {'msg': data['msg'], 'uid': data['uid'], 'name': data['name']}, room=room)
 
@@ -603,7 +660,7 @@ def on_write(data):
             work = Work(data['uid'], room, op, count)
             work.put()
         else:
-            work.info = str(int(work.info) + count)
+            work[0].info = str(int(work[0].info) + count)
             models.session.commit()
     except OSError as reason:
         print('Error: %s' % str(reason))
@@ -612,3 +669,15 @@ def on_write(data):
 @socketio.on('folderChange', namespace='/socket')
 def on_folder_change(data):
     emit('folder', {'id': data['id']}, room=session['room'])
+
+
+@private.route('/downloadWork/<gid>/', methods=['get'])
+def downloadWork(gid):
+    tid = Group.get(gid).TID
+    groupMember = GM.get(gid, session['email'])
+    if groupMember is None and session['role'] != 1:
+        return jsonify({'code': -1, 'msg': 'you can download this file'})
+    path = "T" + str(tid) + "G" + gid
+    zipDir(os.path.join(app.root_path, path), path + ".zip")
+    return send_from_directory(app.root_path, path + ".zip",
+                               as_attachment=True)  # as_attachment=True 一定要写，不然会变成打开，而不是下载

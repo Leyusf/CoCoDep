@@ -1,0 +1,197 @@
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CoCoDep - Group{{ group.id }} {{ task.name }}</title>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+    <script src="/static/js/jquery-1.11.0.min.js"></script>
+    <script src="/static/js/chart.js"></script>
+  </head>
+  <body>
+  <h1 id="title" tid="{{ task.id }}" gid="{{ group.id }}">{{ module }} {{ task.name }} {{ group.id }} <a href="/downloadWork/{{ group.id }}/">DownLoad Work</a></h1>
+    <div style="width: 100vw;height:100%;">
+        <div id="addCode" style="width: 33%;height:400px;display: inline;float: left"></div>
+        <div style="width: 30%;height:400px;display: inline;float: left;padding-left: 10px;padding-right: 10px;margin-bottom:50px;overflow: auto;border: solid 2px darkseagreen;border-radius: 5px;">
+            <h3 style="position: center">Work Log</h3>
+            {% for i in range(workCases[2]|length) %}
+                {% if workCases[2] != "" %}
+                <span>{{ workCases[2][i] }}</span><br>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div id="deleteCode" style="width: 33%;height:400px;display: inline;float: right"></div>
+        <br><br>
+        <div id="chatCase" style="width: 50%;height:400px;display: inline;float: left"></div>
+        <div id="timeCase" style="width: 40%;height:400px;display: inline;float: left"></div>
+    </div>
+
+    <script type="text/javascript">
+        var addChart = echarts.init(document.getElementById('addCode'));
+        var addOption = {
+          title: {
+            text: 'Added Code',
+            // subtext: 'Code',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            orient: 'vertical',
+            left: 'left'
+          },
+          series: [
+            {
+              name: 'Access From',
+              type: 'pie',
+              radius: '50%',
+              data: [
+                  {% for i in range(members|length) %}
+                      {value: {{ workCases[0][i]}}, name:'{{members[i]}}'},
+                  {% endfor %}
+              ],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        };
+      addChart.setOption(addOption);
+      var delChart = echarts.init(document.getElementById('deleteCode'));
+        var delOption = {
+          title: {
+            text: 'Deleted Code',
+            // subtext: 'Code',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            orient: 'vertical',
+            left: 'left'
+          },
+          series: [
+            {
+              name: 'Access From',
+              type: 'pie',
+              radius: '50%',
+              data: [
+                  {% for i in range(members|length) %}
+                      {value: {{ workCases[1][i]}}, name:'{{members[i]}}'},
+                  {% endfor %}
+              ],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        };
+      delChart.setOption(delOption);
+      var chatChart = echarts.init(document.getElementById('chatCase'));
+      var chatOption = {
+          title: {
+            text: 'Collaboration and communication'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {},
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+          },
+          yAxis: {
+            type: 'category',
+            data: [
+                {% for i in range(members|length) %}
+                      '{{members[i]}}',
+                {% endfor %}
+            ]
+          },
+          series: [
+            {
+              name: 'Text chat',
+              type: 'bar',
+              data: [
+                  {% for i in range(members|length) %}
+                      '{{ workCases[3][i]}}',
+                  {% endfor %}
+              ]
+            },
+            {
+              name: 'Voice chat',
+              type: 'bar',
+              data: [
+                  {% for i in range(members|length) %}
+                      '{{ workCases[4][i]}}',
+                  {% endfor %}
+              ]
+            }
+          ]
+        };
+      chatChart.setOption(chatOption);
+      var timeChart = echarts.init(document.getElementById('timeCase'));
+      var timeOption = {
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        top: '5%',
+        left: 'center'
+      },
+      series: [
+        {
+          name: 'Access From',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '40',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: [
+              {% for i in range(members|length) %}
+                  {value: {{ workCases[5][i]}}, name:'{{members[i]}}'},
+              {% endfor %}
+          ]
+        }
+      ]
+    };
+      timeChart.setOption(timeOption);
+    </script>
+  </body>
+</html>
