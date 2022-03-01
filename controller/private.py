@@ -404,7 +404,7 @@ def workSpace(id):
                     break
                 count -= 1
                 time += float(i.time)
-            times.append(time)
+            times.append(time//1)
             if add is not None:
                 workCasesAdd.append(add[0].info)
             else:
@@ -610,7 +610,7 @@ def on_read(data):
     uid = data['uid']
     file = Record.get(fid)
     try:
-        f = open(file.realpath, 'r', encoding='GBK').read()
+        f = open(file.realpath, 'r', encoding='UTF-8').read()
         emit('readText', {'content': f, 'id': fid, 'uid': uid}, room=room)
     except OSError as reason:
         print('Error: %s' % str(reason))

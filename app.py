@@ -19,7 +19,7 @@ app.config['MAIL_SERVER'] = "smtp.qq.com"
 app.config['MAIL_PORT'] = "587"
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = "1911663703@qq.com"
-app.config['MAIL_PASSWORD'] = "moejsohrpkecbhhi"  # 生成的授权码
+app.config['MAIL_PASSWORD'] = "upkhabbcvwkygaab"  # 生成的授权码
 app.config['MAIL_DEFAULT_SENDER'] = "1911663703@qq.com"
 
 mail.init_app(app)
