@@ -133,34 +133,63 @@
         .bit-html section.section.qfy-row-2-6156904ae0ed9754510{padding-left:15px;padding-right:15px;padding-top:20px;padding-bottom:0;margin-top:0;margin-bottom: !important;min-height:0;}}
             </style>
                                   <div class="container">
+            <h2 style="margin-left: -15px">Existing Tasks</h2>
             <div class="row">
                 <div class="module_row1">
-                    <div class="col-md-3 module_list1">
+                    <div class="col-md-2 module_list1">
                         Module
                     </div>
-                    <div class="col-md-3 module_list1">
+                    <div class="col-md-2 module_list1">
                         Task Name
                     </div>
-                    <div class="col-md-3 module_list1">
+                    <div class="col-md-2 module_list1">
                         Module Leader
                     </div>
-                    <div class="col-md-3 module_list1">
+                    <div class="col-md-2 module_list1">
+                        Start Time
+                    </div>
+                    <div class="col-md-2 module_list1">
+                        Deadline
+                    </div>
+                    <div class="col-md-2 module_list1">
                         Operation
                     </div>
                 </div>
             {% for i in tasks %}
                 {% set it = (loop.index + 1)%2 %}
                 <div class="module_row{{ it }}">
-                    <div class="col-md-3 module_list{{ it }}">
+                    <div class="col-md-2 module_list{{ it }}">
                         {{ i.module }}
                     </div>
-                    <div class="col-md-3 module_list{{ it }}">
+                    <div class="col-md-2 module_list{{ it }}">
                         {{ i.name }}
                     </div>
-                    <div class="col-md-3 module_list{{ it }}">
+                    <div class="col-md-2 module_list{{ it }}">
                         {{ i.leader }}
                     </div>
-                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">
+                    {% if i.state == -1 %}
+                    <div class="col-md-2 module_list{{ it }}">
+                        Task not open
+                    </div>
+                    <div class="col-md-2 module_list{{ it }}">
+                        {{ i.end }}
+                    </div>
+                    {% elif i.state == 1 %}
+                    <div class="col-md-2 module_list{{ it }}">
+                        {{ i.start }}
+                    </div>
+                    <div class="col-md-2 module_list{{ it }}">
+                        Task closed
+                    </div>
+                    {% else %}
+                    <div class="col-md-2 module_list{{ it }}">
+                        {{ i.start }}
+                    </div>
+                    <div class="col-md-2 module_list{{ it }}">
+                        {{ i.end }}
+                    </div>
+                    {% endif %}
+                    <div class="col-md-2 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">
                         Info
                     </div>
                 </div>

@@ -169,11 +169,31 @@
             {% endif %}
             {% if role == 1 %}
                 <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;" id="show_box">
-                    <div class="row"> <div class="module_row1"> <div class="col-md-3 module_list1">Student ID</div> <div class="col-md-3 module_list1">Student Name</div> <div class="col-md-3 module_list1">Email</div> <div class="col-md-3 module_list1">Operation </div> </div>{% for i in students %}{% set it = (loop.index + 1)%2 %} <div class="module_row{{ it }}"> <div class="col-md-3 module_list{{ it }}">{{ i.id }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.name }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.email }} </div> <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkUser({{ i.email }})">Info </div> </div>{% endfor %} </div>
+                    <div class="row"> <div class="module_row1"> <div class="col-md-3 module_list1">Student ID</div> <div class="col-md-3 module_list1">Student Name</div> <div class="col-md-3 module_list1">Email</div> <div class="col-md-3 module_list1">Operation </div> </div>{% for i in students %}{% set it = (loop.index + 1)%2 %} <div class="module_row{{ it }}"> <div class="col-md-3 module_list{{ it }}">{{ i.id }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.name }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.email }} </div> <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkUser('{{ i.email }}')">Info </div> </div>{% endfor %} </div>
                 </div>
             {% else %}
                 <div class="col-md-10" style="padding-left: 40px;padding-right: 40px;" id="show_box">
-                    <div class="row"> <div class="module_row1"> <div class="col-md-3 module_list1">Task Name </div> <div class="col-md-3 module_list1">Start Time </div> <div class="col-md-3 module_list1">Deadline </div> <div class="col-md-3 module_list1">Operation </div> </div>{% for i in tasks %}{% set it = (loop.index + 1)%2 %} <div class="module_row{{ it }}"> <div class="col-md-3 module_list{{ it }}">{{ i.name }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.start }} </div> <div class="col-md-3 module_list{{ it }}">{{ i.end }} </div> <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo({{ i.id }})">Info </div> </div>{% endfor %} </div>
+                    <div class="row"> <div class="module_row1"> <div class="col-md-3 module_list1">Task Name </div> <div class="col-md-3 module_list1">Start Time </div> <div class="col-md-3 module_list1">Deadline </div> <div class="col-md-3 module_list1">Operation </div> </div>
+                        {% for i in tasks %}
+                            {% set it = (loop.index + 1)%2 %}
+                            <div class="module_row{{ it }}">
+                                <div class="col-md-3 module_list{{ it }}">
+                                    {{ i.name }}
+                                </div>
+                                <div class="col-md-3 module_list{{ it }}">
+                                    {{ i.start }}
+                                </div>
+                                <div class="col-md-3 module_list{{ it }}">
+                                    {{ i.end }}
+                                </div>
+                                {% if i.state == -1 %}
+                                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}">Task not open</div>
+                                {% elif i.state == 1 %}
+                                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}">Task closed</div>
+                                {% else %}
+                                    <div class="col-md-3 module_list{{ it }} module_btn{{ it }}" onclick="checkInfo('{{ i.id }}')">Info </div>
+                                {% endif %}
+                            </div>{% endfor %} </div>
                 </div>
             {% endif %}
            </div>

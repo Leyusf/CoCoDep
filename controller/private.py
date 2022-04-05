@@ -1,9 +1,10 @@
+import datetime
 import os
 import pathlib
 
 import xlrd
 from flask import url_for, redirect, send_from_directory, Blueprint, render_template, session, request, jsonify
-from flask_socketio import emit, join_room, leave_room, rooms
+from flask_socketio import emit, join_room, leave_room
 
 from app import models, app, organizationName, organizationInfo, organizationEmail, socketio
 from entity.File import Record
@@ -83,6 +84,12 @@ def task():
         for i in modules:
             ts = Task.getAllByModule(i.id)
             for j in ts:
+                if datetime.datetime.now() < j.start:
+                    j.state = -1
+                elif datetime.datetime.now() > j.end:
+                    j.state = 1
+                else:
+                    j.state = 0
                 j.module = Module.getById(j.MID).name
                 j.leader = user.name
                 tasks.append(j)
@@ -99,6 +106,12 @@ def task():
             for task in Task.getAllByModule(module.MID):
                 task.module = name
                 task.leader = leader
+                if datetime.datetime.now() < task.start:
+                    task.state = -1
+                elif datetime.datetime.now() > task.end:
+                    task.state = 1
+                else:
+                    task.state = 0
                 tasks.append(task)
         tasks.sort(key=lambda t: t.end, reverse=True)
         return render_template('tasksPage.html', role=user.role, name=user.name, email=user.email, tasks=tasks,
@@ -428,6 +441,10 @@ def workSpace(id):
         workCases = [workCasesAdd, workCasesDelete, workLog, chatCase, speakCase, times]
         return render_template("details.html", group=group, task=task, members=groupMember, workCases=workCases,
                                module=moduleName)
+    if task.start > datetime.datetime.now():
+        return "Task not open"
+    if task.end < datetime.datetime.now():
+        return "Task closed"
     pathname = "T" + str(task.id) + "G" + str(group.id)
     mkdir(pathname)
     realPath = os.path.join(app.root_path, pathname)
